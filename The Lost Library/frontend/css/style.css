@@ -1,0 +1,61 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #241B17;
+    color: #E9DFC9;
+    font-family: Georgia, serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome {
+    width: 90%;
+    max-width: 700px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.eyebrow {
+    color: #D4AF70;
+    letter-spacing: 3px;
+    font-size: 12px;
+}
+
+h1 {
+    color: #D4AF70;
+    font-size: clamp(42px, 8vw, 72px);
+    margin: 24px 0;
+}
+
+.description {
+    max-width: 500px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+    color: #E9DFC9;
+}
+
+button {
+    background: #D4AF70;
+    color: #241B17;
+    border: none;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background: #E9DFC9;
+}
+
+#message {
+    margin-top: 24px;
+    color: #D4AF70;
+}
