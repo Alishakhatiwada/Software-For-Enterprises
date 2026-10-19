@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+    <!-- Welcome Screen -->
     <main class="welcome">
         <p class="eyebrow">A MYSTERY WAITING TO BE UNCOVERED</p>
 
@@ -19,10 +21,204 @@
         </p>
 
         <button id="startButton">Enter the Library</button>
-
         <p id="message"></p>
     </main>
 
+    <!-- Chapter One: Story Screen -->
+    <main class="story hidden" id="storyScreen">
+        <p class="eyebrow">CHAPTER ONE</p>
+
+        <h1>The Forgotten Door</h1>
+
+        <p class="story-text">
+            On a quiet evening, you discover an old library
+            hidden behind a forgotten doorway.
+        </p>
+
+        <p class="story-text">
+            Dust covers the bookshelves, strange symbols mark
+            the walls, and a mysterious golden book rests
+            on a wooden table.
+        </p>
+
+        <p class="story-text">
+            A note beside the book reads:
+            "Only those who seek the truth may enter."
+        </p>
+
+        <p class="question">What will you do next?</p>
+
+        <button id="exploreButton">Explore the Library</button>
+    </main>
+
+    <!-- Library Exploration Screen -->
+    <main class="exploration hidden" id="explorationScreen">
+
+        <p class="eyebrow">CHAPTER ONE · EXPLORE</p>
+
+        <h1>The Forgotten Library</h1>
+
+        <p class="room-description">
+            Dust fills the silent room. Something hidden here
+            may reveal the library's first secret.
+        </p>
+
+        <div class="room-items">
+
+            <div class="room-item">
+                <div class="item-icon">📕</div>
+                <h2>The Golden Book</h2>
+                <p>An old book rests on the wooden table.</p>
+                <button class="inspectButton" data-item="book">
+                    Inspect Book
+                </button>
+            </div>
+
+            <div class="room-item">
+                <div class="item-icon">📜</div>
+                <h2>The Mysterious Note</h2>
+                <p>A folded piece of parchment lies nearby.</p>
+                <button class="inspectButton" data-item="note">
+                    Read Note
+                </button>
+            </div>
+
+            <div class="room-item">
+                <div class="item-icon">🚪</div>
+                <h2>The Locked Door</h2>
+                <p>Strange symbols cover its ancient surface.</p>
+                <button class="inspectButton" data-item="door">
+                    Inspect Door
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Clue Display -->
+        <div class="clue-panel" aria-live="polite">
+            <h2 id="clueTitle">Your Discoveries</h2>
+
+            <p id="clueMessage">
+                Explore the objects to uncover the library's secrets.
+            </p>
+        </div>
+
+        <!-- Clue Progress -->
+        <p id="progressMessage" aria-live="polite">
+            Explore the library and discover all three clues.
+        </p>
+
+        <!-- Hidden until all clues are discovered -->
+        <button id="puzzleButton" class="hidden">
+            Enter the Hidden Puzzle
+        </button>
+
+        <button id="backButton" class="secondary-button">
+            Return to Story
+        </button>
+
+    </main>
+
+    <!-- Banana API Puzzle Screen -->
+    <main class="puzzle-screen hidden" id="puzzleScreen">
+
+        <p class="eyebrow">CHAPTER ONE · THE CHALLENGE</p>
+
+        <h1>The Hidden Puzzle</h1>
+
+        <p class="story-text">
+            The three clues have revealed the challenge guarding
+            the ancient door. Solve the puzzle to continue your journey.
+        </p>
+
+        <!-- Loading and error messages -->
+        <p id="puzzleLoading" aria-live="polite">
+            Your puzzle will appear here.
+        </p>
+
+        <!-- Real puzzle image will be inserted here -->
+        <div class="puzzle-image-container">
+            <img
+                id="puzzleImage"
+                class="hidden"
+                src=""
+                alt="Banana mathematical puzzle"
+            >
+        </div>
+
+        <!-- Answer form -->
+        <form id="answerForm">
+            <label for="answerInput">What is your answer?</label>
+
+            <input
+                type="number"
+                id="answerInput"
+                name="answer"
+                placeholder="Enter your answer"
+                step="1"
+                required
+                disabled
+            >
+
+            <button type="submit" id="submitAnswerButton" disabled>
+                Submit Answer
+            </button>
+        </form>
+
+        <!-- Answer feedback -->
+        <p id="answerFeedback" aria-live="polite"></p>
+
+        <button
+            type="button"
+            id="retryPuzzleButton"
+            class="secondary-button hidden"
+        >
+            Try Another Puzzle
+        </button>
+
+        <button
+            type="button"
+            id="returnToLibraryButton"
+            class="secondary-button"
+        >
+            Return to the Library
+        </button>
+
+    </main>
+
+    <!-- Chapter Two: Unlocked after a correct answer -->
+    <main class="story hidden" id="nextChapterScreen">
+
+        <p class="eyebrow">CHAPTER TWO · UNLOCKED</p>
+
+        <h1>The Secret Beyond the Door</h1>
+
+        <p class="story-text">
+            The symbols on the ancient door begin to glow.
+            With a deep rumble, the lock finally releases.
+        </p>
+
+        <p class="story-text">
+            Beyond the doorway, a narrow staircase descends
+            into darkness. At the bottom, a faint golden light
+            flickers beneath another mysterious doorway.
+        </p>
+
+        <p class="question">
+            Your adventure has only just begun...
+        </p>
+
+        <p>
+            You have completed the first challenge of The Lost Library.
+        </p>
+
+        <button id="returnFromChapterButton">
+            Return to the Library
+        </button>
+
+    </main>
+
     <script src="js/game.js"></script>
+
 </body>
 </html>
