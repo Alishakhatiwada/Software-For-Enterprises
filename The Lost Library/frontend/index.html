@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +8,33 @@
 </head>
 <body>
 
-    <!-- Welcome Screen -->
-    <main class="welcome">
+    <!-- Persistent Top Navigation / User Session Bar -->
+    <header class="top-nav" id="topNav">
+        <div class="nav-brand">
+            <span class="nav-logo">🏛️</span>
+            <span class="nav-title">The Lost Library</span>
+            <span class="nav-badge" id="currentChapterBadge">Chapter 1</span>
+        </div>
+
+        <div class="nav-controls">
+            <!-- Open Library Archive Modal Button -->
+            <button id="openArchiveButton" class="nav-button" title="Search Library Archives">
+                📚 Archives
+            </button>
+
+            <!-- Dynamic User Authentication Info -->
+            <div id="userStatusArea" class="user-status-area">
+                <!-- Injected via JavaScript based on session -->
+                <span id="playerGreeting">Loading...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Floating Toast Notification -->
+    <div id="toastNotification" class="toast hidden" aria-live="polite"></div>
+
+    <!-- 1. Welcome Screen -->
+    <main class="welcome" id="welcomeScreen">
         <p class="eyebrow">A MYSTERY WAITING TO BE UNCOVERED</p>
 
         <h1>The Lost Library</h1>
@@ -20,204 +44,263 @@
             Every secret brings you closer to the truth.
         </p>
 
+        <nav class="account-links" id="welcomeAccountLinks" aria-label="Account">
+            <a href="login.html">Log in</a>
+            <span aria-hidden="true">·</span>
+            <a href="register.html">Create an account</a>
+        </nav>
+
         <button id="startButton">Enter the Library</button>
         <p id="message"></p>
     </main>
 
-    <!-- Chapter One: Story Screen -->
+    <!-- 2. Chapter Story Prologue Screen -->
     <main class="story hidden" id="storyScreen">
-        <p class="eyebrow">CHAPTER ONE</p>
+        <p class="eyebrow" id="storyEyebrow">CHAPTER ONE</p>
 
-        <h1>The Forgotten Door</h1>
+        <h1 id="storyTitle">The Forgotten Door</h1>
 
-        <p class="story-text">
+        <p class="story-text" id="storyParagraph1">
             On a quiet evening, you discover an old library
             hidden behind a forgotten doorway.
         </p>
 
-        <p class="story-text">
+        <p class="story-text" id="storyParagraph2">
             Dust covers the bookshelves, strange symbols mark
             the walls, and a mysterious golden book rests
             on a wooden table.
         </p>
 
-        <p class="story-text">
+        <p class="story-text" id="storyParagraph3">
             A note beside the book reads:
             "Only those who seek the truth may enter."
         </p>
 
-        <p class="question">What will you do next?</p>
+        <p class="question" id="storyQuestion">What will you do next?</p>
 
-        <button id="exploreButton">Explore the Library</button>
+        <button id="exploreButton">Explore the Room</button>
     </main>
 
-    <!-- Library Exploration Screen -->
+    <!-- 3. Library Exploration Screen (Dynamic for Room 1 & Room 2) -->
     <main class="exploration hidden" id="explorationScreen">
 
-        <p class="eyebrow">CHAPTER ONE · EXPLORE</p>
+        <p class="eyebrow" id="roomEyebrow">CHAPTER ONE · EXPLORE</p>
 
-        <h1>The Forgotten Library</h1>
+        <h1 id="roomTitle">The Forgotten Library</h1>
 
-        <p class="room-description">
+        <p class="room-description" id="roomDescription">
             Dust fills the silent room. Something hidden here
             may reveal the library's first secret.
         </p>
 
-        <div class="room-items">
-
+        <!-- Room Items Grid (Populated dynamically by rooms.js) -->
+        <div class="room-items" id="roomItemsContainer">
             <div class="room-item">
                 <div class="item-icon">📕</div>
                 <h2>The Golden Book</h2>
                 <p>An old book rests on the wooden table.</p>
-                <button class="inspectButton" data-item="book">
-                    Inspect Book
-                </button>
+                <button class="inspectButton" data-item="book">Inspect Book</button>
             </div>
 
             <div class="room-item">
                 <div class="item-icon">📜</div>
                 <h2>The Mysterious Note</h2>
                 <p>A folded piece of parchment lies nearby.</p>
-                <button class="inspectButton" data-item="note">
-                    Read Note
-                </button>
+                <button class="inspectButton" data-item="note">Read Note</button>
             </div>
 
             <div class="room-item">
                 <div class="item-icon">🚪</div>
                 <h2>The Locked Door</h2>
                 <p>Strange symbols cover its ancient surface.</p>
-                <button class="inspectButton" data-item="door">
-                    Inspect Door
-                </button>
+                <button class="inspectButton" data-item="door">Inspect Door</button>
             </div>
-
         </div>
 
-        <!-- Clue Display -->
+        <!-- Clue Display Panel -->
         <div class="clue-panel" aria-live="polite">
             <h2 id="clueTitle">Your Discoveries</h2>
-
             <p id="clueMessage">
                 Explore the objects to uncover the library's secrets.
             </p>
         </div>
 
-        <!-- Clue Progress -->
+        <!-- Clue Progress Counter -->
         <p id="progressMessage" aria-live="polite">
             Explore the library and discover all three clues.
         </p>
 
-        <!-- Hidden until all clues are discovered -->
-        <button id="puzzleButton" class="hidden">
-            Enter the Hidden Puzzle
-        </button>
+        <!-- Action Controls -->
+        <div class="exploration-actions">
+            <button id="puzzleButton" class="hidden">
+                Enter the Hidden Puzzle
+            </button>
 
-        <button id="backButton" class="secondary-button">
-            Return to Story
-        </button>
+            <button id="backButton" class="secondary-button">
+                Return to Story
+            </button>
+        </div>
 
     </main>
 
-    <!-- Banana API Puzzle Screen -->
+    <!-- 4. Banana API Puzzle Screen -->
     <main class="puzzle-screen hidden" id="puzzleScreen">
 
-        <p class="eyebrow">CHAPTER ONE · THE CHALLENGE</p>
+        <p class="eyebrow" id="puzzleEyebrow">CHAPTER ONE · THE CHALLENGE</p>
 
-        <h1>The Hidden Puzzle</h1>
+        <h1 id="puzzleHeading">The Hidden Puzzle</h1>
 
-        <p class="story-text">
+        <p class="story-text" id="puzzlePrompt">
             The three clues have revealed the challenge guarding
             the ancient door. Solve the puzzle to continue your journey.
         </p>
 
-        <!-- Loading and error messages -->
-        <p id="puzzleLoading" aria-live="polite">
-            Your puzzle will appear here.
-        </p>
+        <!-- Loading and error feedback -->
+        <div class="puzzle-status-box">
+            <p id="puzzleLoading" aria-live="polite">
+                Connecting to the ancient puzzle mechanism...
+            </p>
+        </div>
 
-        <!-- Real puzzle image will be inserted here -->
+        <!-- Real puzzle image dynamically inserted here -->
         <div class="puzzle-image-container">
             <img
                 id="puzzleImage"
                 class="hidden"
                 src=""
-                alt="Banana mathematical puzzle"
+                alt="Mathematical puzzle equation"
             >
         </div>
 
-        <!-- Answer form -->
+        <!-- Player answer submission form -->
         <form id="answerForm">
-            <label for="answerInput">What is your answer?</label>
+            <label for="answerInput" id="answerLabel">What is the secret solution?</label>
 
-            <input
-                type="number"
-                id="answerInput"
-                name="answer"
-                placeholder="Enter your answer"
-                step="1"
-                required
-                disabled
-            >
+            <div class="input-row">
+                <input
+                    type="number"
+                    id="answerInput"
+                    name="answer"
+                    placeholder="Enter number (e.g. 0-9)"
+                    step="1"
+                    required
+                    disabled
+                >
 
-            <button type="submit" id="submitAnswerButton" disabled>
-                Submit Answer
-            </button>
+                <button type="submit" id="submitAnswerButton" disabled>
+                    Submit Answer
+                </button>
+            </div>
         </form>
 
         <!-- Answer feedback -->
-        <p id="answerFeedback" aria-live="polite"></p>
+        <p id="answerFeedback" class="answer-feedback" aria-live="polite"></p>
 
-        <button
-            type="button"
-            id="retryPuzzleButton"
-            class="secondary-button hidden"
-        >
-            Try Another Puzzle
-        </button>
+        <div class="puzzle-actions">
+            <button
+                type="button"
+                id="retryPuzzleButton"
+                class="secondary-button hidden"
+            >
+                Try Another Puzzle
+            </button>
 
-        <button
-            type="button"
-            id="returnToLibraryButton"
-            class="secondary-button"
-        >
-            Return to the Library
-        </button>
+            <button
+                type="button"
+                id="returnToLibraryButton"
+                class="secondary-button"
+            >
+                Return to the Room
+            </button>
+        </div>
 
     </main>
 
-    <!-- Chapter Two: Unlocked after a correct answer -->
+    <!-- 5. Chapter Completion Transition Screen -->
     <main class="story hidden" id="nextChapterScreen">
 
-        <p class="eyebrow">CHAPTER TWO · UNLOCKED</p>
+        <p class="eyebrow" id="unlockedEyebrow">CHAPTER TWO · UNLOCKED</p>
 
-        <h1>The Secret Beyond the Door</h1>
+        <h1 id="unlockedTitle">The Secret Beyond the Door</h1>
 
-        <p class="story-text">
+        <p class="story-text" id="unlockedText1">
             The symbols on the ancient door begin to glow.
             With a deep rumble, the lock finally releases.
         </p>
 
-        <p class="story-text">
+        <p class="story-text" id="unlockedText2">
             Beyond the doorway, a narrow staircase descends
-            into darkness. At the bottom, a faint golden light
-            flickers beneath another mysterious doorway.
+            into the Grand Archive, where ancient manuscripts line the walls.
         </p>
 
-        <p class="question">
-            Your adventure has only just begun...
+        <p class="question" id="unlockedQuestion">
+            Your adventure deepens...
         </p>
 
-        <p>
-            You have completed the first challenge of The Lost Library.
-        </p>
-
-        <button id="returnFromChapterButton">
-            Return to the Library
-        </button>
+        <div class="chapter-unlocked-actions">
+            <button id="advanceChapterButton">
+                Enter Chapter Two: The Grand Archive
+            </button>
+            <button id="returnFromChapterButton" class="secondary-button">
+                Review Current Room
+            </button>
+        </div>
 
     </main>
 
+    <!-- 6. Grand Victory / Final Sanctum Screen -->
+    <main class="story hidden" id="victoryScreen">
+        <p class="eyebrow">CHRONICLES COMPLETED</p>
+        <h1>Master of The Lost Library</h1>
+        <p class="story-text">
+            You have solved the ancient mathematical seals, unlocked the Cryptic Vault,
+            and deciphered the forgotten knowledge of the ancients!
+        </p>
+        <div class="victory-card">
+            <h2>📜 Archivist Certificate</h2>
+            <p id="victoryPlayerName">Archivist: Alisha</p>
+            <p id="victoryStats">All Chapters Cleared · Puzzles Solved: 2</p>
+            <p><em>"Knowledge opens doors that keys cannot."</em></p>
+        </div>
+        <button id="playAgainButton" class="secondary-button">
+            Restart Adventure
+        </button>
+    </main>
+
+    <!-- 7. Interactive Open Library Search Modal (Interoperability Showcase) -->
+    <div id="archiveModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle">📚 External Library Archives</h2>
+                    <p class="modal-subtitle">Live interoperability with Open Library REST API</p>
+                </div>
+                <button id="closeArchiveButton" class="modal-close" aria-label="Close Archives">✕</button>
+            </div>
+
+            <div class="search-bar">
+                <input
+                    type="text"
+                    id="searchBooksInput"
+                    placeholder="Search ancient scrolls, topics (e.g. mystery, astronomy, cryptography)..."
+                >
+                <button id="searchBooksButton">Search Archive</button>
+            </div>
+
+            <p id="archiveStatus" class="archive-status" aria-live="polite">
+                Enter a keyword to query external manuscript records.
+            </p>
+
+            <div id="booksResults" class="books-grid">
+                <!-- Dynamically populated book cards -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts in Order of Dependency -->
+    <script src="js/api.js"></script>
+    <script src="js/rooms.js"></script>
+    <script src="js/books.js"></script>
     <script src="js/game.js"></script>
 
 </body>

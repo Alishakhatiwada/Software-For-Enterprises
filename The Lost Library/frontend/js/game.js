@@ -1,60 +1,121 @@
 
-const API_BASE_URL = "http://localhost:5000/api";
+/**
+ * The Lost Library - Master Game Engine
+ * Features:
+ * - Dynamic chapter progression
+ * - Clue discovery
+ * - Banana API puzzles
+ * - Saved player progress
+ * - Login and logout support
+ * - Four or more chapters
+ */
 
-// ==========================================
-// 1. GET HTML ELEMENTS
-// ==========================================
+const gameState = {
+    currentUser: null,
+    currentLevel: 1,
+    solvedPuzzles: 0,
+    completedLevels: [],
+    discoveredClues: {},
+    puzzleUnlocked: false,
+    puzzleSolved: false,
+    loadingPuzzle: false,
+    checkingAnswer: false,
+    currentPuzzleLoaded: false
+};
 
-const welcomeScreen = document.querySelector(".welcome");
+// DOM ELEMENTS
+const topNav = document.getElementById("topNav");
+const currentChapterBadge =
+    document.getElementById("currentChapterBadge");
+const userStatusArea =
+    document.getElementById("userStatusArea");
+const toastNotification =
+    document.getElementById("toastNotification");
+
+const welcomeScreen =
+    document.getElementById("welcomeScreen") ||
+    document.querySelector(".welcome");
 const startButton = document.getElementById("startButton");
+const welcomeAccountLinks =
+    document.getElementById("welcomeAccountLinks");
 
 const storyScreen = document.getElementById("storyScreen");
+const storyEyebrow = document.getElementById("storyEyebrow");
+const storyTitle = document.getElementById("storyTitle");
+const storyParagraph1 = document.getElementById("storyParagraph1");
+const storyParagraph2 = document.getElementById("storyParagraph2");
+const storyParagraph3 = document.getElementById("storyParagraph3");
+const storyQuestion = document.getElementById("storyQuestion");
 const exploreButton = document.getElementById("exploreButton");
 
-const explorationScreen = document.getElementById("explorationScreen");
-const backButton = document.getElementById("backButton");
-
+const explorationScreen =
+    document.getElementById("explorationScreen");
+const roomEyebrow = document.getElementById("roomEyebrow");
+const roomTitle = document.getElementById("roomTitle");
+const roomDescription = document.getElementById("roomDescription");
+const roomItemsContainer =
+    document.getElementById("roomItemsContainer");
 const clueTitle = document.getElementById("clueTitle");
 const clueMessage = document.getElementById("clueMessage");
 const progressMessage = document.getElementById("progressMessage");
-
 const puzzleButton = document.getElementById("puzzleButton");
+const backButton = document.getElementById("backButton");
+
 const puzzleScreen = document.getElementById("puzzleScreen");
+const puzzleEyebrow = document.getElementById("puzzleEyebrow");
+const puzzleHeading = document.getElementById("puzzleHeading");
+const puzzlePrompt = document.getElementById("puzzlePrompt");
 const puzzleLoading = document.getElementById("puzzleLoading");
 const puzzleImage = document.getElementById("puzzleImage");
-
 const answerForm = document.getElementById("answerForm");
 const answerInput = document.getElementById("answerInput");
-const submitAnswerButton = document.getElementById("submitAnswerButton");
+const submitAnswerButton =
+    document.getElementById("submitAnswerButton");
 const answerFeedback = document.getElementById("answerFeedback");
+const retryPuzzleButton =
+    document.getElementById("retryPuzzleButton");
+const returnToLibraryButton =
+    document.getElementById("returnToLibraryButton");
 
-const retryPuzzleButton = document.getElementById("retryPuzzleButton");
-const returnToLibraryButton = document.getElementById("returnToLibraryButton");
+const nextChapterScreen =
+    document.getElementById("nextChapterScreen");
+const unlockedEyebrow = document.getElementById("unlockedEyebrow");
+const unlockedTitle = document.getElementById("unlockedTitle");
+const unlockedText1 = document.getElementById("unlockedText1");
+const unlockedText2 = document.getElementById("unlockedText2");
+const unlockedQuestion =
+    document.getElementById("unlockedQuestion");
+const advanceChapterButton =
+    document.getElementById("advanceChapterButton");
+const returnFromChapterButton =
+    document.getElementById("returnFromChapterButton");
 
-const nextChapterScreen = document.getElementById("nextChapterScreen");
-const returnFromChapterButton = document.getElementById(
-    "returnFromChapterButton"
-);
+const victoryScreen = document.getElementById("victoryScreen");
+const victoryPlayerName =
+    document.getElementById("victoryPlayerName");
+const victoryStats = document.getElementById("victoryStats");
+const playAgainButton = document.getElementById("playAgainButton");
 
-// ==========================================
-// 2. GAME VARIABLES
-// ==========================================
+let toastTimeout = null;
+let chapterTransitionTimer = null;
 
-const discoveredClues = {
-    book: false,
-    note: false,
-    door: false
-};
 
-let puzzleUnlocked = false;
-let puzzleSolved = false;
-let loadingPuzzle = false;
-let checkingAnswer = false;
-let currentPuzzleLoaded = false;
+// GENERAL HELPERS
 
-// ==========================================
-// 3. SHOW AND HIDE SCREENS
-// ==========================================
+function showToast(message, duration = 3500) {
+    if (!toastNotification) return;
+
+    toastNotification.textContent = message;
+    toastNotification.classList.remove("hidden");
+
+    if (toastTimeout) {
+        clearTimeout(toastTimeout);
+    }
+
+    toastTimeout = setTimeout(() => {
+        toastNotification.classList.add("hidden");
+    }, duration);
+}
 
 function showScreen(screenToShow) {
     const screens = [
@@ -62,10 +123,11 @@ function showScreen(screenToShow) {
         storyScreen,
         explorationScreen,
         puzzleScreen,
-        nextChapterScreen
+        nextChapterScreen,
+        victoryScreen
     ];
 
-    screens.forEach(function (screen) {
+    screens.forEach(screen => {
         if (screen) {
             screen.classList.add("hidden");
         }
@@ -73,356 +135,847 @@ function showScreen(screenToShow) {
 
     if (screenToShow) {
         screenToShow.classList.remove("hidden");
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 }
 
-// ==========================================
-// 4. START THE GAME
-// ==========================================
+function escapeHtml(value) {
+    const element = document.createElement("div");
+    element.textContent = String(value ?? "");
+    return element.innerHTML;
+}
 
-startButton.addEventListener("click", function () {
-    showScreen(storyScreen);
-});
+function getChapterNumbers() {
+    return Object.keys(window.ROOMS || {})
+        .map(Number)
+        .filter(Number.isFinite)
+        .sort((a, b) => a - b);
+}
 
-// ==========================================
-// 5. EXPLORE THE LIBRARY
-// ==========================================
+function getCurrentRoom() {
+    return window.ROOMS
+        ? window.ROOMS[gameState.currentLevel] || null
+        : null;
+}
 
-exploreButton.addEventListener("click", function () {
-    showScreen(explorationScreen);
-});
+function getNextChapterNumber() {
+    const chapters = getChapterNumbers();
+    const currentIndex = chapters.indexOf(gameState.currentLevel);
 
-// ==========================================
-// 6. RETURN TO THE STORY
-// ==========================================
+    if (currentIndex === -1) return null;
 
-backButton.addEventListener("click", function () {
-    showScreen(storyScreen);
-});
+    return chapters[currentIndex + 1] ?? null;
+}
 
-// ==========================================
-// 7. CLUE INFORMATION
-// ==========================================
 
-const clues = {
-    book: {
-        title: "The Golden Book",
-        message:
-            'You open the dusty book. Its first page reads: ' +
-            '"Knowledge opens doors that keys cannot." ' +
-            "A strange symbol is drawn beneath the words."
-    },
+// NAVIGATION AND ACCOUNT DISPLAY
 
-    note: {
-        title: "The Mysterious Note",
-        message:
-            '"Three secrets guard the way. Find the truth ' +
-            'before you proceed." Someone has hidden the rest.'
-    },
-
-    door: {
-        title: "The Locked Door",
-        message:
-            "Strange symbols cover the ancient door. " +
-            "It will not open until you solve its hidden puzzle."
+function updateTopNav() {
+    if (currentChapterBadge) {
+        currentChapterBadge.textContent =
+            `Chapter ${gameState.currentLevel}`;
     }
-};
 
-// ==========================================
-// 8. INSPECT CLUES
-// ==========================================
+    if (!userStatusArea) return;
 
-document.querySelectorAll(".inspectButton").forEach(function (button) {
-    button.addEventListener("click", function () {
-        const item = button.dataset.item;
-        const clue = clues[item];
+    if (gameState.currentUser) {
+        userStatusArea.innerHTML = `
+            <div class="user-pill">
+                <span>👤 ${escapeHtml(gameState.currentUser.name)}</span>
+                <span class="user-level-badge">
+                    ⭐ Chapter ${gameState.currentLevel}
+                </span>
+                <span>🧩 ${gameState.solvedPuzzles} solved</span>
+            </div>
+            <button id="logoutButton" class="nav-logout-button">
+                Log Out
+            </button>
+        `;
 
-        if (!clue) {
-            return;
+        const logoutButton =
+            document.getElementById("logoutButton");
+
+        if (logoutButton) {
+            logoutButton.addEventListener("click", () => {
+                if (window.api) {
+                    window.api.logout();
+                }
+
+                gameState.currentUser = null;
+
+                updateTopNav();
+                showScreen(welcomeScreen);
+                showToast("You have been logged out.");
+            });
         }
 
-        clueTitle.textContent = clue.title;
-        clueMessage.textContent = clue.message;
+        if (welcomeAccountLinks) {
+            welcomeAccountLinks.innerHTML = `
+                <span>Welcome back,
+                    <strong>${escapeHtml(gameState.currentUser.name)}</strong>
+                </span>
+            `;
+        }
+    } else {
+        userStatusArea.innerHTML = `
+            <span class="user-pill">👤 Guest</span>
+            <a href="login.html" class="nav-auth-link">Log In</a>
+            <span>·</span>
+            <a href="register.html" class="nav-auth-link">Register</a>
+        `;
 
-        discoveredClues[item] = true;
-
-        checkClueProgress();
-    });
-});
-
-// ==========================================
-// 9. CHECK CLUE PROGRESS
-// ==========================================
-
-function checkClueProgress() {
-    const discoveredCount = Object.values(discoveredClues)
-        .filter(Boolean).length;
-
-    progressMessage.textContent =
-        `Clues discovered: ${discoveredCount} of 3.`;
-
-    if (discoveredCount === 3) {
-        puzzleUnlocked = true;
-
-        progressMessage.textContent =
-            "All three clues discovered! The hidden puzzle is unlocked.";
-
-        puzzleButton.classList.remove("hidden");
+        if (welcomeAccountLinks) {
+            welcomeAccountLinks.innerHTML = "";
+        }
     }
 }
 
-// ==========================================
-// 10. OPEN THE BANANA PUZZLE
-// ==========================================
 
-puzzleButton.addEventListener("click", async function () {
-    if (!puzzleUnlocked || loadingPuzzle || puzzleSolved) {
-        return;
-    }
+// SAVED PROGRESS
 
-    showScreen(puzzleScreen);
-
-    // Reuse the puzzle if it has already loaded.
-    if (currentPuzzleLoaded) {
-        return;
-    }
-
-    await loadBananaPuzzle();
-});
-
-// ==========================================
-// 11. LOAD A PUZZLE FROM THE BACKEND
-// ==========================================
-
-async function loadBananaPuzzle() {
-    if (loadingPuzzle || puzzleSolved) {
-        return;
-    }
-
-    loadingPuzzle = true;
-    currentPuzzleLoaded = false;
-
-    puzzleLoading.textContent = "Loading your Banana puzzle...";
-
-    puzzleImage.classList.add("hidden");
-    puzzleImage.removeAttribute("src");
-
-    answerInput.value = "";
-    answerInput.disabled = true;
-    submitAnswerButton.disabled = true;
-
-    answerFeedback.textContent = "";
-    retryPuzzleButton.classList.add("hidden");
+async function loadPlayerProgress() {
+    if (!gameState.currentUser || !window.api) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/banana/puzzle`);
+        const saved = await window.api.getProgress(
+            gameState.currentUser.name
+        );
 
-        // Read the response safely.
-        const data = await response.json();
+        if (saved) {
+            const chapters = getChapterNumbers();
 
-        if (!response.ok || !data.success || !data.puzzle) {
-            throw new Error(
-                data.message || `Server error: ${response.status}`
-            );
-        }
+            gameState.currentLevel =
+                Number(saved.currentLevel) || chapters[0] || 1;
 
-        if (!data.puzzle.question) {
-            throw new Error("The API did not return a puzzle image.");
-        }
+            gameState.solvedPuzzles =
+                Number(saved.solvedPuzzles) || 0;
 
-        // Display the Banana API puzzle image.
-        puzzleImage.onload = function () {
-            puzzleImage.classList.remove("hidden");
-            puzzleLoading.textContent =
-                "Study the image carefully and solve the puzzle.";
-        };
+            gameState.completedLevels =
+                Array.isArray(saved.completedLevels)
+                    ? [...new Set(saved.completedLevels.map(Number))]
+                    : [];
 
-        puzzleImage.onerror = function () {
-            currentPuzzleLoaded = false;
-            puzzleImage.classList.add("hidden");
-
-            puzzleLoading.textContent =
-                "The puzzle was received, but its image could not load.";
-
-            answerInput.disabled = true;
-            submitAnswerButton.disabled = true;
-            retryPuzzleButton.classList.remove("hidden");
-        };
-
-        puzzleImage.src = data.puzzle.question;
-
-        // Wait for the image to load before enabling answers.
-        await new Promise(function (resolve, reject) {
-            if (puzzleImage.complete && puzzleImage.naturalWidth > 0) {
-                resolve();
-                return;
+            // If the saved chapter no longer exists, use the first
+            // chapter that has not been completed.
+            if (!window.ROOMS[gameState.currentLevel]) {
+                gameState.currentLevel =
+                    chapters.find(level =>
+                        !gameState.completedLevels.includes(level)
+                    ) ?? chapters[chapters.length - 1] ?? 1;
             }
 
-            puzzleImage.onload = function () {
-                puzzleImage.classList.remove("hidden");
-                resolve();
-            };
+            // If all chapters are complete, keep the last chapter
+            // selected. Initialization will display the victory screen.
+            updateTopNav();
 
-            puzzleImage.onerror = function () {
-                reject(new Error("Could not load the puzzle image."));
-            };
+            showToast("Your saved progress has been loaded.");
+        } else {
+            await savePlayerProgress();
+        }
+    } catch (error) {
+        console.error("Could not load progress:", error);
+        showToast("Could not load saved progress. You can still play.");
+    }
+}
+
+async function savePlayerProgress() {
+    updateTopNav();
+
+    if (!gameState.currentUser) {
+        return;
+    }
+
+    const updates = {
+        currentLevel: gameState.currentLevel,
+        solvedPuzzles: gameState.solvedPuzzles,
+        completedLevels: gameState.completedLevels
+    };
+
+    try {
+        const result = await window.api.saveProgress(
+            gameState.currentUser.name,
+            updates
+        );
+
+        if (!result || !result.success) {
+            console.warn("The server did not confirm the progress save.");
+            showToast("Progress could not be confirmed as saved.");
+        }
+    } catch (error) {
+        console.error("Could not save progress:", error);
+        showToast("Could not save progress. Please try again later.");
+    }
+}
+
+
+// ROOM RENDERING
+
+function renderRoom(levelNumber) {
+    const room = window.ROOMS[levelNumber];
+
+    if (!room) {
+        showToast("This chapter is not available.");
+        return;
+    }
+
+    gameState.currentLevel = Number(levelNumber);
+    gameState.discoveredClues = {};
+    gameState.puzzleUnlocked = false;
+    gameState.puzzleSolved =
+        gameState.completedLevels.includes(Number(levelNumber));
+    gameState.currentPuzzleLoaded = false;
+
+    if (storyEyebrow) {
+        storyEyebrow.textContent = room.eyebrow;
+    }
+
+    if (storyTitle) {
+        storyTitle.textContent = room.title;
+    }
+
+    if (storyParagraph1) {
+        storyParagraph1.textContent = room.storyGreeting;
+    }
+
+    if (storyParagraph2) {
+        storyParagraph2.textContent = room.description;
+    }
+
+    if (storyParagraph3) {
+        storyParagraph3.textContent = "";
+    }
+
+    if (storyQuestion) {
+        storyQuestion.textContent = room.storyQuestion;
+    }
+
+    if (roomEyebrow) {
+        roomEyebrow.textContent =
+            `CHAPTER ${room.chapterNumber} · EXPLORE`;
+    }
+
+    if (roomTitle) {
+        roomTitle.textContent = room.title;
+    }
+
+    if (roomDescription) {
+        roomDescription.textContent = room.description;
+    }
+
+    if (roomItemsContainer) {
+        roomItemsContainer.innerHTML = "";
+
+        room.items.forEach(item => {
+            const card = document.createElement("div");
+
+            card.className = "room-item";
+            card.id = `item-card-${item.id}`;
+
+            card.innerHTML = `
+                <div class="item-icon">${escapeHtml(item.icon)}</div>
+                <h2>${escapeHtml(item.name)}</h2>
+                <p>${escapeHtml(item.shortDesc)}</p>
+                <button class="inspectButton"
+                        data-item="${escapeHtml(item.id)}">
+                    Inspect ${escapeHtml(
+                        item.name.replace(/^The\s+/, "")
+                    )}
+                </button>
+            `;
+
+            roomItemsContainer.appendChild(card);
         });
 
-        currentPuzzleLoaded = true;
-
-        puzzleImage.classList.remove("hidden");
-
-        puzzleLoading.textContent =
-            "Study the image carefully and solve the puzzle.";
-
-        answerInput.disabled = false;
-        submitAnswerButton.disabled = false;
-
-        answerInput.focus();
-
-    } catch (error) {
-        console.error("Banana puzzle loading failed:", error);
-
-        puzzleLoading.textContent =
-            "Could not load the puzzle. " + getErrorMessage(error);
-
-        retryPuzzleButton.classList.remove("hidden");
-
-    } finally {
-        loadingPuzzle = false;
-    }
-}
-
-// ==========================================
-// 12. EXPLAIN COMMON ERRORS
-// ==========================================
-
-function getErrorMessage(error) {
-    if (error instanceof TypeError) {
-        return (
-            "Check that the backend is running and that CORS " +
-            "allows your frontend to connect. Open the browser " +
-            "Console for more details."
-        );
+        roomItemsContainer
+            .querySelectorAll(".inspectButton")
+            .forEach(button => {
+                button.addEventListener("click", () => {
+                    inspectItem(button.dataset.item, room);
+                });
+            });
     }
 
-    return error.message || "Please try again.";
+    if (clueTitle) {
+        clueTitle.textContent = "Your Discoveries";
+    }
+
+    if (clueMessage) {
+        clueMessage.textContent =
+            "Inspect relics in this room to uncover hidden secrets.";
+    }
+
+    if (progressMessage) {
+        progressMessage.textContent =
+            `Clues discovered: 0 of ${room.items.length}.`;
+    }
+
+    if (puzzleButton) {
+        puzzleButton.classList.add("hidden");
+        puzzleButton.disabled = gameState.puzzleSolved;
+    }
+
+    if (puzzleEyebrow) {
+        puzzleEyebrow.textContent =
+            `CHAPTER ${room.chapterNumber} · THE CHALLENGE`;
+    }
+
+    if (puzzleHeading) {
+        puzzleHeading.textContent = room.puzzleTitle;
+    }
+
+    if (puzzlePrompt) {
+        puzzlePrompt.textContent = room.puzzleStory;
+    }
+
+    if (gameState.puzzleSolved) {
+        if (progressMessage) {
+            progressMessage.textContent =
+                "You have already completed this chapter.";
+        }
+
+        if (clueMessage) {
+            clueMessage.textContent =
+                "This chapter is complete. Continue your adventure.";
+        }
+    }
+
+    updateTopNav();
 }
 
-// ==========================================
-// 13. SUBMIT THE PLAYER'S ANSWER
-// ==========================================
 
-answerForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+// CLUE DISCOVERY
+
+function inspectItem(itemId, room) {
+    const item = room.items.find(entry => entry.id === itemId);
+
+    if (!item) return;
+
+    if (clueTitle) {
+        clueTitle.textContent = item.title;
+    }
+
+    if (clueMessage) {
+        clueMessage.textContent = item.message;
+    }
+
+    gameState.discoveredClues[itemId] = true;
+
+    const card = document.getElementById(`item-card-${itemId}`);
+
+    if (card) {
+        card.style.borderColor = "var(--gold)";
+    }
+
+    checkClueProgress(room);
+}
+
+function checkClueProgress(room) {
+    const discoveredCount =
+        Object.keys(gameState.discoveredClues).length;
+
+    const totalCount = room.items.length;
+
+    if (progressMessage) {
+        progressMessage.textContent =
+            `Clues discovered: ${discoveredCount} of ${totalCount}.`;
+    }
 
     if (
-        !currentPuzzleLoaded ||
-        puzzleSolved ||
-        loadingPuzzle ||
-        checkingAnswer
+        discoveredCount >= totalCount &&
+        !gameState.puzzleSolved
+    ) {
+        gameState.puzzleUnlocked = true;
+
+        if (progressMessage) {
+            progressMessage.textContent =
+                "All clues discovered! The challenge is unlocked.";
+        }
+
+        if (puzzleButton) {
+            puzzleButton.classList.remove("hidden");
+            puzzleButton.disabled = false;
+        }
+
+        showToast("All clues discovered! Challenge unlocked.");
+    }
+}
+
+
+// BANANA API PUZZLE
+
+async function loadPuzzle() {
+    if (
+        gameState.loadingPuzzle ||
+        gameState.puzzleSolved
     ) {
         return;
     }
 
-    const answer = answerInput.value.trim();
-
-    if (answer === "") {
-        answerFeedback.textContent = "Please enter your answer.";
+    if (!puzzleImage) {
+        showToast("The puzzle image element is missing from the page.");
         return;
     }
 
-    checkingAnswer = true;
-    submitAnswerButton.disabled = true;
+    gameState.loadingPuzzle = true;
+    gameState.currentPuzzleLoaded = false;
 
-    answerFeedback.textContent = "Checking your answer...";
+    if (puzzleLoading) {
+        puzzleLoading.textContent =
+            "Retrieving a challenge from the ancient Banana API...";
+    }
+
+    puzzleImage.classList.add("hidden");
+    puzzleImage.removeAttribute("src");
+
+    if (answerInput) {
+        answerInput.value = "";
+        answerInput.disabled = true;
+    }
+
+    if (submitAnswerButton) {
+        submitAnswerButton.disabled = true;
+    }
+
+    if (answerFeedback) {
+        answerFeedback.textContent = "";
+        answerFeedback.style.color = "var(--gold)";
+    }
+
+    if (retryPuzzleButton) {
+        retryPuzzleButton.classList.add("hidden");
+    }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/banana/answer`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                answer: answer
-            })
+        const puzzle = await window.api.getBananaPuzzle();
+
+        if (!puzzle || !puzzle.question) {
+            throw new Error("Invalid puzzle received from server.");
+        }
+
+        // Register image handlers before assigning the image source.
+        await new Promise((resolve, reject) => {
+            puzzleImage.onload = () => resolve();
+
+            puzzleImage.onerror = () => {
+                reject(new Error("Unable to display the puzzle image."));
+            };
+
+            puzzleImage.src = puzzle.question;
+
+            // Handle an image already cached by the browser.
+            if (puzzleImage.complete && puzzleImage.naturalWidth > 0) {
+                resolve();
+            }
         });
 
-        const data = await response.json();
+        puzzleImage.classList.remove("hidden");
+        gameState.currentPuzzleLoaded = true;
 
-        if (!response.ok || !data.success) {
-            throw new Error(
-                data.message || `Server error: ${response.status}`
-            );
+        if (puzzleLoading) {
+            puzzleLoading.textContent =
+                "Study the glyphs and find the missing digit.";
         }
 
-        if (data.correct) {
-            puzzleSolved = true;
-            currentPuzzleLoaded = false;
-
-            answerFeedback.textContent =
-                "Correct! The ancient door begins to open...";
-
-            answerInput.disabled = true;
-            submitAnswerButton.disabled = true;
-
-            // Give the player a moment to read the message.
-            window.setTimeout(function () {
-                showScreen(nextChapterScreen);
-            }, 1200);
-
-        } else {
-            answerFeedback.textContent =
-                "Not quite! Look carefully at the puzzle and try again.";
-
-            submitAnswerButton.disabled = false;
+        if (answerInput) {
+            answerInput.disabled = false;
             answerInput.focus();
-            answerInput.select();
         }
 
+        if (submitAnswerButton) {
+            submitAnswerButton.disabled = false;
+        }
     } catch (error) {
-        console.error("Answer checking failed:", error);
+        console.error("Puzzle load failed:", error);
 
-        answerFeedback.textContent =
-            "Could not check your answer. " + getErrorMessage(error);
+        if (puzzleLoading) {
+            puzzleLoading.textContent =
+                `Could not load puzzle. ${error.message}`;
+        }
 
-        submitAnswerButton.disabled = false;
-
+        if (retryPuzzleButton) {
+            retryPuzzleButton.classList.remove("hidden");
+        }
     } finally {
-        checkingAnswer = false;
+        gameState.loadingPuzzle = false;
     }
-});
+}
 
-// ==========================================
-// 14. LOAD ANOTHER PUZZLE
-// ==========================================
+async function handleAnswerSubmission(event) {
+    if (event) {
+        event.preventDefault();
+    }
 
-retryPuzzleButton.addEventListener("click", async function () {
-    if (loadingPuzzle || checkingAnswer || puzzleSolved) {
+    if (
+        !gameState.currentPuzzleLoaded ||
+        gameState.puzzleSolved ||
+        gameState.checkingAnswer
+    ) {
         return;
     }
 
-    await loadBananaPuzzle();
+    const answer = (answerInput?.value || "").trim();
+
+    if (!answer) {
+        if (answerFeedback) {
+            answerFeedback.textContent = "Please enter your answer.";
+        }
+
+        return;
+    }
+
+    gameState.checkingAnswer = true;
+
+    if (submitAnswerButton) {
+        submitAnswerButton.disabled = true;
+    }
+
+    if (answerFeedback) {
+        answerFeedback.textContent =
+            "Consulting the library archive...";
+    }
+
+    try {
+        const result = await window.api.checkBananaAnswer(answer);
+
+        if (result.correct) {
+            gameState.puzzleSolved = true;
+            gameState.currentPuzzleLoaded = false;
+            gameState.solvedPuzzles += 1;
+
+            if (
+                !gameState.completedLevels.includes(
+                    gameState.currentLevel
+                )
+            ) {
+                gameState.completedLevels.push(
+                    gameState.currentLevel
+                );
+            }
+
+            if (answerFeedback) {
+                answerFeedback.style.color = "var(--green-success)";
+                answerFeedback.textContent =
+                    "Correct! The ancient mechanism unlocks.";
+            }
+
+            await savePlayerProgress();
+
+            if (chapterTransitionTimer) {
+                clearTimeout(chapterTransitionTimer);
+            }
+
+            chapterTransitionTimer = setTimeout(() => {
+                handleChapterCompleted();
+            }, 1200);
+        } else {
+            if (answerFeedback) {
+                answerFeedback.style.color = "var(--red-alert)";
+                answerFeedback.textContent =
+                    result.message || "Incorrect answer. Try again!";
+            }
+
+            if (submitAnswerButton) {
+                submitAnswerButton.disabled = false;
+            }
+
+            if (answerInput) {
+                answerInput.focus();
+                answerInput.select();
+            }
+        }
+    } catch (error) {
+        console.error("Answer check failed:", error);
+
+        if (answerFeedback) {
+            answerFeedback.style.color = "var(--red-alert)";
+            answerFeedback.textContent =
+                `Error checking answer: ${error.message}`;
+        }
+
+        if (submitAnswerButton) {
+            submitAnswerButton.disabled = false;
+        }
+    } finally {
+        gameState.checkingAnswer = false;
+    }
+}
+
+
+// CHAPTER COMPLETION AND PROGRESSION
+
+function handleChapterCompleted() {
+    const currentRoom = getCurrentRoom();
+
+    if (!currentRoom) {
+        showToast("Could not find the completed chapter.");
+        return;
+    }
+
+    const nextLevel = getNextChapterNumber();
+
+    // All chapters have been completed.
+    if (nextLevel === null) {
+        if (victoryPlayerName) {
+            const name = gameState.currentUser
+                ? gameState.currentUser.name
+                : "Adventurer";
+
+            victoryPlayerName.textContent =
+                `Honored Archivist: ${name}`;
+        }
+
+        if (victoryStats) {
+            victoryStats.textContent =
+                `Chapters Mastered: ${gameState.completedLevels.length} · ` +
+                `Puzzles Deciphered: ${gameState.solvedPuzzles}`;
+        }
+
+        showScreen(victoryScreen);
+        return;
+    }
+
+    const nextRoom = window.ROOMS[nextLevel];
+
+    if (unlockedEyebrow) {
+        unlockedEyebrow.textContent =
+            `CHAPTER ${gameState.currentLevel} COMPLETED`;
+    }
+
+    if (unlockedTitle) {
+        unlockedTitle.textContent =
+            currentRoom.unlockMessage ||
+            `Chapter ${nextLevel} Unlocked`;
+    }
+
+    if (unlockedText1) {
+        unlockedText1.textContent =
+            `Your discovery leads you to ${nextRoom.title}.`;
+    }
+
+    if (unlockedText2) {
+        unlockedText2.textContent = nextRoom.storyGreeting;
+    }
+
+    if (unlockedQuestion) {
+        unlockedQuestion.textContent =
+            `Are you ready to enter Chapter ${nextLevel}?`;
+    }
+
+    if (advanceChapterButton) {
+        advanceChapterButton.textContent =
+            `Enter Chapter ${nextLevel}: ${nextRoom.title}`;
+    }
+
+    showScreen(nextChapterScreen);
+}
+
+async function advanceToNextChapter() {
+    const nextLevel = getNextChapterNumber();
+
+    if (nextLevel === null) {
+        handleChapterCompleted();
+        return;
+    }
+
+    // Change the chapter number before saving progress.
+    gameState.currentLevel = nextLevel;
+
+    renderRoom(nextLevel);
+
+    await savePlayerProgress();
+
+    // Display the new chapter's story.
+    showScreen(storyScreen);
+}
+
+
+// EVENT LISTENERS
+
+function setupEventListeners() {
+    if (startButton) {
+        startButton.addEventListener("click", () => {
+            const chapters = getChapterNumbers();
+
+            // If every chapter is completed, show the ending.
+            const allCompleted =
+                chapters.length > 0 &&
+                chapters.every(level =>
+                    gameState.completedLevels.includes(level)
+                );
+
+            if (allCompleted) {
+                handleChapterCompleted();
+                return;
+            }
+
+            // If the saved chapter is completed, offer the next one.
+            if (
+                gameState.completedLevels.includes(
+                    gameState.currentLevel
+                )
+            ) {
+                handleChapterCompleted();
+                return;
+            }
+
+            renderRoom(gameState.currentLevel);
+            showScreen(storyScreen);
+        });
+    }
+
+    if (exploreButton) {
+        exploreButton.addEventListener("click", () => {
+            showScreen(explorationScreen);
+        });
+    }
+
+    // FIX: Return to Story now handles completed chapters.
+    if (backButton) {
+        backButton.addEventListener("click", () => {
+            if (
+                gameState.completedLevels.includes(
+                    gameState.currentLevel
+                )
+            ) {
+                handleChapterCompleted();
+            } else {
+                showScreen(storyScreen);
+            }
+        });
+    }
+
+    if (puzzleButton) {
+        puzzleButton.addEventListener("click", async () => {
+            if (
+                !gameState.puzzleUnlocked ||
+                gameState.loadingPuzzle ||
+                gameState.puzzleSolved
+            ) {
+                return;
+            }
+
+            showScreen(puzzleScreen);
+
+            if (!gameState.currentPuzzleLoaded) {
+                await loadPuzzle();
+            }
+        });
+    }
+
+    if (answerForm) {
+        answerForm.addEventListener(
+            "submit",
+            handleAnswerSubmission
+        );
+    }
+
+    if (retryPuzzleButton) {
+        retryPuzzleButton.addEventListener("click", loadPuzzle);
+    }
+
+    if (returnToLibraryButton) {
+        returnToLibraryButton.addEventListener("click", () => {
+            showScreen(explorationScreen);
+        });
+    }
+
+    if (returnFromChapterButton) {
+        returnFromChapterButton.addEventListener("click", () => {
+            if (
+                gameState.completedLevels.includes(
+                    gameState.currentLevel
+                )
+            ) {
+                handleChapterCompleted();
+            } else {
+                showScreen(explorationScreen);
+            }
+        });
+    }
+
+    if (advanceChapterButton) {
+        advanceChapterButton.addEventListener(
+            "click",
+            advanceToNextChapter
+        );
+    }
+
+    if (playAgainButton) {
+        playAgainButton.addEventListener("click", async () => {
+            const confirmed = window.confirm(
+                "Start a new adventure? This resets your saved progress."
+            );
+
+            if (!confirmed) return;
+
+            gameState.currentLevel =
+                getChapterNumbers()[0] || 1;
+
+            gameState.completedLevels = [];
+            gameState.solvedPuzzles = 0;
+            gameState.discoveredClues = {};
+            gameState.puzzleUnlocked = false;
+            gameState.puzzleSolved = false;
+            gameState.currentPuzzleLoaded = false;
+
+            renderRoom(gameState.currentLevel);
+
+            await savePlayerProgress();
+
+            showScreen(welcomeScreen);
+            showToast("A new adventure awaits!");
+        });
+    }
+}
+
+
+// INITIALIZATION
+
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!window.ROOMS || !window.api) {
+        console.error("Required game modules are missing.");
+        showToast(
+            "A game module failed to load. Check index.html scripts."
+        );
+        return;
+    }
+
+    gameState.currentUser = window.api.getCurrentUser();
+
+    setupEventListeners();
+
+    if (gameState.currentUser) {
+        await loadPlayerProgress();
+    }
+
+    const chapters = getChapterNumbers();
+
+    if (!window.ROOMS[gameState.currentLevel]) {
+        gameState.currentLevel = chapters[0] || 1;
+    }
+
+    updateTopNav();
+
+    // Show the victory screen if every chapter has been completed.
+    const allChaptersCompleted =
+        chapters.length > 0 &&
+        chapters.every(level =>
+            gameState.completedLevels.includes(level)
+        );
+
+    if (allChaptersCompleted) {
+        handleChapterCompleted();
+    } else {
+        renderRoom(gameState.currentLevel);
+        showScreen(welcomeScreen);
+    }
+
+    if (window.booksModule) {
+        window.booksModule.init();
+    }
+
+    console.log("The Lost Library game engine initialized.");
 });
-
-// ==========================================
-// 15. RETURN TO THE LIBRARY
-// ==========================================
-
-returnToLibraryButton.addEventListener("click", function () {
-    showScreen(explorationScreen);
-});
-
-// ==========================================
-// 16. RETURN AFTER CHAPTER ONE
-// ==========================================
-
-returnFromChapterButton.addEventListener("click", function () {
-    showScreen(explorationScreen);
-});
-
-// ==========================================
-// 17. GAME READY
-// ==========================================
-
-console.log("The Lost Library game is ready!");

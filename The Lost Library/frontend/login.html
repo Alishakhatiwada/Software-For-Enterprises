@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | The Lost Library</title>
+    <link rel="stylesheet" href="css/auth.css">
+    <script src="js/auth.js" defer></script>
+</head>
+<body>
+    <main class="auth-container">
+        <a href="index.html" class="back-link">← Back to the Library</a>
+
+        <section class="auth-card">
+            <div class="book-icon">📖</div>
+            <p class="eyebrow">YOUR STORY CONTINUES</p>
+            <h1>Welcome Back</h1>
+            <p class="subtitle">
+                Return to the library and uncover its secrets.
+            </p>
+
+            <form id="loginForm">
+                <label for="loginEmail">Email Address</label>
+                <input
+                    type="email"
+                    id="loginEmail"
+                    name="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="loginPassword">Password</label>
+                <input
+                    type="password"
+                    id="loginPassword"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit" id="loginButton">
+                    Enter the Library
+                </button>
+
+                <p id="loginMessage" class="form-message" role="status"
+                   aria-live="polite"></p>
+            </form>
+
+            <p class="switch-page">
+                New to the library?
+                <a href="register.html">Create an account</a>
+            </p>
+        </section>
+
+        <p class="footer-text">Every book holds a secret.</p>
+    </main>
+</body>
+</html>
