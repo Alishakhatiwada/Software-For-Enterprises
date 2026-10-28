@@ -1,0 +1,128 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+    background: #171914;
+    color: #F5F2E8;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 700px;
+    padding: 30px;
+    background: #252820;
+    border: 1px solid #424536;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.game-container h1 {
+    margin-top: 0;
+    color: #F4D35E;
+    font-size: 32px;
+}
+
+.game-container > p {
+    color: #C4C7B9;
+    line-height: 1.6;
+}
+
+/* Banana API puzzle image */
+#puzzleImage {
+    width: 100%;
+    max-width: 450px;
+    max-height: 350px;
+    object-fit: contain;
+    margin: 25px auto;
+    padding: 12px;
+    background: #FFFFFF;
+    border-radius: 10px;
+}
+
+/* Answer input */
+#answerInput {
+    width: 100%;
+    max-width: 300px;
+    padding: 13px;
+    background: #171914;
+    color: #F5F2E8;
+    border: 1px solid #555A48;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+#answerInput:focus {
+    outline: 2px solid #F4D35E;
+}
+
+/* Buttons */
+.game-container button {
+    padding: 12px 18px;
+    background: #F4D35E;
+    color: #202116;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#submitAnswer {
+    width: auto;
+    margin: 12px 0;
+}
+
+#nextPuzzle {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 15px;
+}
+
+.game-container button:hover:not(:disabled) {
+    background: #FFE785;
+}
+
+.game-container button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Feedback message */
+#gameMessage {
+    min-height: 24px;
+    margin: 20px 0;
+    color: #F4D35E;
+    font-weight: bold;
+}
+
+/* Mobile-friendly layout */
+@media (max-width: 520px) {
+    body {
+        padding: 14px;
+    }
+
+    .game-container {
+        padding: 20px 15px;
+    }
+
+    .game-container h1 {
+        font-size: 25px;
+    }
+
+    #answerInput {
+        max-width: 100%;
+    }
+
+    #submitAnswer {
+        width: 100%;
+    }
+}

@@ -1,26 +1,35 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | The Lost Library</title>
-    <link rel="stylesheet" href="css/auth.css">
-    <script src="js/auth.js" defer></script>
+
+    <title>Login | BananaAPI-Quest</title>
+
+    <link rel="stylesheet" href="css/login.css">
+    <script src="js/login.js" defer></script>
 </head>
 <body>
     <main class="auth-container">
-        <a href="index.html" class="back-link">← Back to the Library</a>
+
+        <a href="register.html" class="back-link">
+            ← Create an Account
+        </a>
 
         <section class="auth-card">
-            <div class="book-icon">📖</div>
-            <p class="eyebrow">YOUR STORY CONTINUES</p>
-            <h1>Welcome Back</h1>
+            <div class="book-icon">🍌</div>
+
+            <p class="eyebrow">READY FOR A CHALLENGE?</p>
+
+            <h1>Welcome Back!</h1>
+
             <p class="subtitle">
-                Return to the library and uncover its secrets.
+                Log in to solve puzzles, test your skills,
+                and track your progress.
             </p>
 
             <form id="loginForm">
+
                 <label for="loginEmail">Email Address</label>
                 <input
                     type="email"
@@ -42,20 +51,28 @@
                 >
 
                 <button type="submit" id="loginButton">
-                    Enter the Library
+                    Start Playing
                 </button>
 
-                <p id="loginMessage" class="form-message" role="status"
-                   aria-live="polite"></p>
+                <p
+                    id="loginMessage"
+                    class="form-message"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
             </form>
 
             <p class="switch-page">
-                New to the library?
-                <a href="register.html">Create an account</a>
+                Don't have an account?
+                <a href="register.html">Register here</a>
             </p>
         </section>
 
-        <p class="footer-text">Every book holds a secret.</p>
+        <p class="footer-text">
+            Think carefully. Solve the puzzle. Beat your best score!
+        </p>
+
     </main>
 </body>
 </html>

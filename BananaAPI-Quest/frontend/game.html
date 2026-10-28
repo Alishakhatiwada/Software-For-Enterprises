@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Play | BananaAPI-Quest</title>
+
+    <link rel="stylesheet" href="css/game.css">
+
+    <script src="js/auth-check.js" defer></script>
+    <script src="js/game.js" defer></script>
+</head>
+<body>
+    <main class="game-container">
+        <h1>🍌 BananaAPI-Quest</h1>
+
+        <p>Solve the visual maths puzzle!</p>
+
+        <img
+            id="puzzleImage"
+            alt="Banana API maths puzzle"
+            style="display: none; max-width: 100%;"
+        >
+
+        <div>
+            <input
+                type="number"
+                id="answerInput"
+                placeholder="Enter your answer"
+            >
+
+            <button type="button" id="submitAnswer">
+                Submit Answer
+            </button>
+        </div>
+
+        <p id="gameMessage" role="status" aria-live="polite"></p>
+
+        <button type="button" id="nextPuzzle" disabled>
+            Next Puzzle
+        </button>
+    </main>
+</body>
+</html>

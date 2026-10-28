@@ -1,11 +1,8 @@
-
-const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const router = express.Router();
-
+// Generate a login token
 function createToken(user) {
     if (!process.env.JWT_SECRET) {
         throw new Error("JWT_SECRET is missing from the .env file.");
@@ -24,7 +21,7 @@ function createToken(user) {
 }
 
 // REGISTER A NEW USER
-router.post("/register", async function (req, res) {
+async function register(req, res) {
     try {
         const { name, email, password } = req.body;
 
@@ -97,10 +94,10 @@ router.post("/register", async function (req, res) {
             message: "Unable to register. Please try again."
         });
     }
-});
+}
 
 // LOG IN AN EXISTING USER
-router.post("/login", async function (req, res) {
+async function login(req, res) {
     try {
         const { email, password } = req.body;
 
@@ -159,6 +156,9 @@ router.post("/login", async function (req, res) {
             message: "Unable to log in. Please try again."
         });
     }
-});
+}
 
-module.exports = router;
+module.exports = {
+    register,
+    login
+};
