@@ -5,42 +5,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Play | BananaAPI-Quest</title>
+    <title>BananaAPI-Quest | Puzzle Game</title>
 
     <link rel="stylesheet" href="css/game.css">
-
-    <script src="js/auth-check.js" defer></script>
-    <script src="js/game.js" defer></script>
 </head>
+
 <body>
     <main class="game-container">
-        <h1>🍌 BananaAPI-Quest</h1>
 
-        <p>Solve the visual maths puzzle!</p>
+        <!-- Header -->
+        <header class="game-header">
+            <a href="index.html" class="game-logo">
+                🍌 Banana<span>API</span>-Quest
+            </a>
 
-        <img
-            id="puzzleImage"
-            alt="Banana API maths puzzle"
-            style="display: none; max-width: 100%;"
-        >
+            <nav class="game-navigation">
+                <a href="leaderboard.html" class="nav-link">
+                    🏆 Leaderboard
+                </a>
 
-        <div>
+                <a href="puzzle-history.html" class="nav-link">
+                    📜 Puzzle History
+                </a>
+            </nav>
+
+            <button type="button" id="logoutButton" class="logout-button">
+                Logout ↗
+            </button>
+        </header>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <p class="eyebrow">YOUR PUZZLE ADVENTURE</p>
+
+            <h1>Ready to Solve a Puzzle?</h1>
+
+            <p>
+                Look carefully at the picture, think logically,
+                and find the correct answer!
+            </p>
+        </section>
+
+        <!-- Statistics -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span class="stat-icon">🍌</span>
+                <div>
+                    <p>Puzzles Solved</p>
+                    <h2 id="solvedCount">0</h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">🏆</span>
+                <div>
+                    <p>Next Achievement</p>
+                    <h2 id="achievementText">First Five</h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">⭐</span>
+                <div>
+                    <p>Total Points</p>
+                    <h2 id="pointsCount">0</h2>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Progress -->
+        <section class="progress-section">
+            <div class="progress-labels">
+                <span>YOUR PROGRESS</span>
+                <span id="progressText">0 / 5 puzzles</span>
+            </div>
+
+            <div
+                id="progressTrack"
+                class="progress-track"
+                role="progressbar"
+                aria-label="Progress toward next achievement"
+                aria-valuemin="0"
+                aria-valuemax="5"
+                aria-valuenow="0"
+            >
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+        </section>
+
+        <!-- Puzzle Card -->
+        <section class="puzzle-card">
+
+            <div class="puzzle-card-header">
+                <span class="live-dot"></span>
+                <span>BANANA PUZZLE CHALLENGE</span>
+
+                <span class="challenge-tag">LET'S PLAY!</span>
+            </div>
+
+            <h2>Can You Crack It? 🍌</h2>
+
+            <p class="puzzle-instructions">
+                Study the picture carefully and enter your numerical answer.
+            </p>
+
+            <!-- Puzzle Image -->
+            <div class="puzzle-image-area">
+                <img
+                    id="puzzleImage"
+                    alt="Banana API visual maths puzzle"
+                    style="display: none;"
+                >
+            </div>
+
+            <!-- Answer Input -->
+            <label for="answerInput">YOUR ANSWER</label>
+
             <input
                 type="number"
                 id="answerInput"
-                placeholder="Enter your answer"
+                placeholder="Enter your number"
+                step="1"
             >
 
-            <button type="button" id="submitAnswer">
-                Submit Answer
-            </button>
-        </div>
+            <!-- Game Buttons -->
+            <div class="game-actions">
 
-        <p id="gameMessage" role="status" aria-live="polite"></p>
+                <button
+                    type="button"
+                    id="submitAnswer"
+                    class="check-button"
+                >
+                    Check Answer ✓
+                </button>
 
-        <button type="button" id="nextPuzzle" disabled>
-            Next Puzzle
-        </button>
+                <button
+                    type="button"
+                    id="nextPuzzle"
+                    class="next-button"
+                    disabled
+                >
+                    Next Puzzle →
+                </button>
+
+            </div>
+
+            <!-- Hint Feature -->
+            <div class="hint-section">
+
+                <button
+                    type="button"
+                    id="hintButton"
+                    class="hint-button"
+                >
+                    💡 Get a Hint (20 Points)
+                </button>
+
+                <p
+                    id="hintMessage"
+                    class="hint-message"
+                    aria-live="polite"
+                ></p>
+
+            </div>
+
+            <!-- Game Messages -->
+            <p
+                id="gameMessage"
+                class="game-message"
+                aria-live="polite"
+            >
+                Get ready to play!
+            </p>
+
+            <div
+                id="celebration"
+                class="celebration"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="game-footer">
+            <p>🍌 Keep thinking. Every puzzle is a new challenge!</p>
+        </footer>
+
     </main>
+
+    <script src="js/auth-check.js"></script>
+    <script src="js/game.js"></script>
+
 </body>
 </html>

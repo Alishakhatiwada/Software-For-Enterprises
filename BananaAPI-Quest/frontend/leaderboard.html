@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BananaAPI-Quest | Leaderboard</title>
+
+    <link rel="stylesheet" href="css/leaderboard.css">
+</head>
+
+<body>
+
+    <main class="leaderboard-container">
+
+        <!-- Header -->
+        <header class="leaderboard-header">
+
+            <a href="game.html" class="logo">
+                🍌 Banana<span>API</span>-Quest
+            </a>
+
+            <a href="game.html" class="back-button">
+                ← Back to Game
+            </a>
+
+        </header>
+
+        <!-- Page Heading -->
+        <section class="page-heading">
+
+            <p class="eyebrow">PLAYER RANKINGS</p>
+
+            <h1>🏆 Leaderboard</h1>
+
+            <p>
+                See how you rank against other BananaAPI-Quest players!
+            </p>
+
+        </section>
+
+        <!-- Your Position -->
+        <section class="my-ranking">
+
+            <div>
+                <p class="ranking-label">YOUR CURRENT POSITION</p>
+                <h2 id="myRank">Not Ranked Yet</h2>
+            </div>
+
+            <div>
+                <p class="ranking-label">YOUR TOTAL POINTS</p>
+                <h2 id="myPoints">0 ⭐</h2>
+            </div>
+
+        </section>
+
+        <!-- Top Three Players -->
+        <section class="top-players">
+
+            <div class="player-card second-place">
+                <div class="medal">🥈</div>
+                <h3 id="secondName">Player Two</h3>
+                <p>2nd Place</p>
+                <strong id="secondPoints">150 Points</strong>
+            </div>
+
+            <div class="player-card first-place">
+                <div class="medal">🥇</div>
+                <h3 id="firstName">Player One</h3>
+                <p>1st Place</p>
+                <strong id="firstPoints">200 Points</strong>
+            </div>
+
+            <div class="player-card third-place">
+                <div class="medal">🥉</div>
+                <h3 id="thirdName">Player Three</h3>
+                <p>3rd Place</p>
+                <strong id="thirdPoints">100 Points</strong>
+            </div>
+
+        </section>
+
+        <!-- All Players -->
+        <section class="ranking-section">
+
+            <h2>All Players</h2>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Puzzles Solved</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="leaderboardBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p id="leaderboardMessage" class="message"></p>
+
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>🍌 Keep solving and climb the leaderboard!</p>
+        </footer>
+
+    </main>
+
+    <script src="js/auth-check.js"></script>
+    <script src="js/leaderboard.js"></script>
+
+</body>
+</html>

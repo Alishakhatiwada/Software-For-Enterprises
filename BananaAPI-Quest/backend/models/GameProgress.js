@@ -1,76 +1,49 @@
 const mongoose = require("mongoose");
 
-const archiveDiscoverySchema = new mongoose.Schema({
-    bookKey: {
-        type: String,
-        required: true
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    bookTitle: {
-        type: String,
-        default: ""
-    },
-    bookAuthor: {
-        type: String,
-        default: ""
-    },
-    coverUrl: {
-        type: String,
-        default: ""
-    },
-    missionId: {
-        type: String,
-        default: "catalogue-cipher"
-    },
-    missionTitle: {
-        type: String,
-        default: "Mission 1: The First Clue"
-    },
-    secretId: {
-        type: String,
-        required: true
-    },
-    discoveredAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+const gameProgressSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+            unique: true
+        },
 
-const gameProgressSchema = new mongoose.Schema({
-    playerName: {
-        type: String,
-        required: true,
-        unique: true
+        totalAttempts: {
+            type: Number,
+            default: 0
+        },
+
+        solvedPuzzles: {
+            type: Number,
+            default: 0
+        },
+
+        totalPoints: {
+            type: Number,
+            default: 0
+        },
+
+        // IDs of puzzles already solved
+        solvedPuzzleIds: {
+            type: [String],
+            default: []
+        },
+
+        // IDs of puzzles where a hint was purchased
+        hintedPuzzleIds: {
+            type: [String],
+            default: []
+        },
+
+        lastPlayed: {
+            type: Date,
+            default: Date.now
+        }
     },
-    currentLevel: {
-        type: Number,
-        default: 1
-    },
-    solvedPuzzles: {
-        type: Number,
-        default: 0
-    },
-    completedLevels: {
-        type: [Number],
-        default: []
-    },
-    archiveDiscoveries: {
-        type: [archiveDiscoverySchema],
-        default: []
-    },
-    unlockedSecrets: {
-        type: [String],
-        default: []
-    },
-    lastPlayed: {
-        type: Date,
-        default: Date.now
+    {
+        timestamps: true
     }
-}, {
-    timestamps: true
-});
+);
 
 module.exports = mongoose.model("GameProgress", gameProgressSchema);

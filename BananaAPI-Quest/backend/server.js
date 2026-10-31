@@ -5,9 +5,8 @@ const express = require("express");
 const cors = require("cors");
 
 const connectDB = require("./config/database");
-const GameProgress = require("./models/GameProgress");
-const bananaApi = require("./services/bananaApi");
 const authRoutes = require("./routes/authRoutes");
+const bananaRoutes = require("./routes/bananaRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,7 +18,10 @@ app.use(express.json());
 // Authentication routes
 app.use("/api/auth", authRoutes);
 
-// HOME
+// Banana puzzle routes
+app.use("/api/banana", bananaRoutes);
+
+// Home route
 app.get("/", (req, res) => {
     res.json({
         success: true,
@@ -27,186 +29,38 @@ app.get("/", (req, res) => {
     });
 });
 
-// GAME INFORMATION
+// Game information
 app.get("/api/game", (req, res) => {
     res.json({
         success: true,
         game: {
             title: "BananaAPI-Quest",
             description:
-                "Register, log in, solve visual maths puzzles, and track your game progress.",
+                "Register, log in, solve visual maths puzzles, and track your progress.",
             status: "In Development"
         }
     });
 });
 
-// GET A BANANA PUZZLE
-app.get("/api/banana/puzzle", async (req, res) => {
-    try {
-        const puzzle = await bananaApi.getPuzzle();
-
-        res.json({
-            success: true,
-            puzzle
-        });
-    } catch (error) {
-        console.error("Banana puzzle error:", error);
-
-        res.status(502).json({
-            success: false,
-            message: "Unable to load a Banana puzzle."
-        });
-    }
+// API 404 handler
+app.use("/api", (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `API route not found: ${req.method} ${req.originalUrl}`
+    });
 });
 
-// CHECK A BANANA PUZZLE ANSWER
-app.post("/api/banana/answer", (req, res) => {
-    try {
-        const { answer, puzzleId } = req.body;
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error("Server error:", err);
 
-        if (String(answer ?? "").trim() === "") {
-            return res.status(400).json({
-                success: false,
-                message: "Please enter an answer."
-            });
-        }
-
-        const correct = bananaApi.checkAnswer(answer, puzzleId);
-
-        res.json({
-            success: true,
-            correct,
-            message: correct
-                ? "Correct! You solved the puzzle."
-                : "Not quite. Try again."
-        });
-    } catch (error) {
-        console.error("Banana answer error:", error);
-
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
-    }
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Internal server error."
+    });
 });
 
-// VALIDATE PLAYER NAME
-function validPlayerName(value) {
-    return (
-        typeof value === "string" &&
-        value.trim().length > 0
-    );
-}
-
-// CREATE GAME PROGRESS
-app.post("/api/progress", async (req, res) => {
-    try {
-        const { playerName } = req.body;
-
-        if (!validPlayerName(playerName)) {
-            return res.status(400).json({
-                success: false,
-                message: "Player name is required."
-            });
-        }
-
-        let progress = await GameProgress.findOne({
-            playerName: playerName.trim()
-        });
-
-        if (progress) {
-            return res.json({
-                success: true,
-                message: "Progress already exists.",
-                progress
-            });
-        }
-
-        progress = new GameProgress({
-            ...req.body,
-            playerName: playerName.trim()
-        });
-
-        await progress.save();
-
-        res.status(201).json({
-            success: true,
-            message: "Game progress created successfully!",
-            progress
-        });
-    } catch (error) {
-        console.error("Progress creation error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: "Could not create game progress."
-        });
-    }
-});
-
-// GET GAME PROGRESS
-app.get("/api/progress/:playerName", async (req, res) => {
-    try {
-        const progress = await GameProgress.findOne({
-            playerName: req.params.playerName
-        });
-
-        if (!progress) {
-            return res.status(404).json({
-                success: false,
-                message: "Game progress not found."
-            });
-        }
-
-        res.json({
-            success: true,
-            progress
-        });
-    } catch (error) {
-        console.error("Progress loading error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: "Could not load game progress."
-        });
-    }
-});
-
-// UPDATE GAME PROGRESS
-app.put("/api/progress/:playerName", async (req, res) => {
-    try {
-        const progress = await GameProgress.findOneAndUpdate(
-            { playerName: req.params.playerName },
-            { $set: req.body },
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-
-        if (!progress) {
-            return res.status(404).json({
-                success: false,
-                message: "Game progress not found."
-            });
-        }
-
-        res.json({
-            success: true,
-            message: "Game progress updated successfully!",
-            progress
-        });
-    } catch (error) {
-        console.error("Progress update error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: "Could not update game progress."
-        });
-    }
-});
-
-// START SERVER
+// Start server
 async function startServer() {
     try {
         await connectDB();

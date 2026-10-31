@@ -1,4 +1,25 @@
 
+/* ==========================================
+   BANANA API QUEST - GAME CSS
+========================================== */
+
+/* CSS Variables */
+
+:root {
+    --cream: #FFF4DF;
+    --warm-white: #FFFDF7;
+    --honey: #F4C66A;
+    --orange: #E89B45;
+    --orange-hover: #D98232;
+    --soft-lime: #D9E5B2;
+    --cocoa: #55412D;
+    --brown-muted: #765C3E;
+    --border-color: #E8D7B8;
+    --success: #567A43;
+}
+
+/* General Styling */
+
 * {
     box-sizing: border-box;
 }
@@ -6,123 +27,556 @@
 body {
     margin: 0;
     min-height: 100vh;
-    padding: 20px;
-    background: #171914;
-    color: #F5F2E8;
-    font-family: Arial, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 24px;
+    background: var(--cream);
+    color: var(--cocoa);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
 }
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Main Container */
 
 .game-container {
     width: 100%;
-    max-width: 700px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 38px;
+}
+
+.game-logo {
+    color: var(--cocoa);
+    font-size: 21px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.game-logo span {
+    color: var(--orange-hover);
+}
+
+.logout-button {
+    width: auto;
+    margin: 0;
+    padding: 10px 16px;
+    background: var(--warm-white);
+    color: var(--cocoa);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.logout-button:hover {
+    background: var(--honey);
+}
+
+/* Game Navigation */
+
+.game-navigation {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-link {
+    padding: 10px 15px;
+    background: var(--cream);
+    color: var(--cocoa);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.nav-link:hover {
+    background: var(--honey);
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   WELCOME SECTION
+========================================== */
+
+.welcome-section {
+    margin-bottom: 28px;
+    text-align: center;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    color: var(--orange-hover);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.welcome-section h1 {
+    margin: 0 0 10px;
+    color: var(--cocoa);
+    font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.25;
+}
+
+.welcome-section > p:last-child {
+    margin: 0;
+    color: var(--brown-muted);
+}
+
+/* ==========================================
+   STATISTICS CARDS
+========================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(85, 65, 45, 0.05);
+}
+
+.stat-icon {
+    font-size: 32px;
+}
+
+.stat-card p {
+    margin: 0 0 5px;
+    color: var(--brown-muted);
+    font-size: 13px;
+}
+
+.stat-card h2 {
+    margin: 0;
+    color: var(--cocoa);
+    font-size: 22px;
+}
+
+/* ==========================================
+   PROGRESS SECTION
+========================================== */
+
+.progress-section {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    color: var(--brown-muted);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#progressText {
+    color: var(--orange-hover);
+}
+
+.progress-track {
+    height: 12px;
+    overflow: hidden;
+    background: var(--cream);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+}
+
+.progress-fill {
+    width: 0;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        var(--honey),
+        var(--orange)
+    );
+    border-radius: inherit;
+    transition: width 0.5s ease;
+}
+
+/* ==========================================
+   PUZZLE CARD
+========================================== */
+
+.puzzle-card {
     padding: 30px;
-    background: #252820;
-    border: 1px solid #424536;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(85, 65, 45, 0.08);
+}
+
+.puzzle-card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    color: var(--brown-muted);
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.live-dot {
+    width: 9px;
+    height: 9px;
+    background: var(--success);
+    border-radius: 50%;
+}
+
+.challenge-tag {
+    margin-left: auto;
+    padding: 6px 10px;
+    background: var(--cream);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--orange-hover);
+    letter-spacing: 0;
+}
+
+.puzzle-card > h2 {
+    margin: 24px 0 8px;
+    color: var(--cocoa);
+    font-size: clamp(23px, 4vw, 30px);
+}
+
+.puzzle-instructions {
+    margin: 0 0 22px;
+    color: var(--brown-muted);
+    font-size: 14px;
+}
+
+/* ==========================================
+   PUZZLE IMAGE
+========================================== */
+
+.puzzle-image-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    margin-bottom: 24px;
+    padding: 18px;
+    background: #FFFFFF;
+    border: 2px solid var(--honey);
+    border-radius: 16px;
+}
+
+#puzzleImage {
+    max-width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* ==========================================
+   ANSWER INPUT
+========================================== */
+
+.puzzle-card label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--cocoa);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#answerInput {
+    width: 100%;
+    padding: 14px;
+    background: var(--cream);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--cocoa);
+    font-size: 16px;
+}
+
+#answerInput::placeholder {
+    color: #927653;
+}
+
+#answerInput:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232, 155, 69, 0.18);
+}
+
+/* ==========================================
+   GAME BUTTONS
+========================================== */
+
+.game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.game-actions button {
+    flex: 1 1 180px;
+    padding: 13px 15px;
+    border: 0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.check-button {
+    background: var(--orange);
+    color: #FFFFFF;
+}
+
+.check-button:hover:not(:disabled) {
+    background: var(--orange-hover);
+}
+
+.next-button {
+    background: var(--honey);
+    color: var(--cocoa);
+}
+
+.next-button:hover:not(:disabled) {
+    background: #F8D786;
+}
+
+/* ==========================================
+   HINT FEATURE
+========================================== */
+
+.hint-section {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--cream);
+    border: 1px solid var(--border-color);
     border-radius: 14px;
     text-align: center;
 }
 
-.game-container h1 {
-    margin-top: 0;
-    color: #F4D35E;
-    font-size: 32px;
-}
-
-.game-container > p {
-    color: #C4C7B9;
-    line-height: 1.6;
-}
-
-/* Banana API puzzle image */
-#puzzleImage {
-    width: 100%;
-    max-width: 450px;
-    max-height: 350px;
-    object-fit: contain;
-    margin: 25px auto;
-    padding: 12px;
-    background: #FFFFFF;
-    border-radius: 10px;
-}
-
-/* Answer input */
-#answerInput {
-    width: 100%;
-    max-width: 300px;
-    padding: 13px;
-    background: #171914;
-    color: #F5F2E8;
-    border: 1px solid #555A48;
-    border-radius: 7px;
-    font-size: 16px;
-}
-
-#answerInput:focus {
-    outline: 2px solid #F4D35E;
-}
-
-/* Buttons */
-.game-container button {
-    padding: 12px 18px;
-    background: #F4D35E;
-    color: #202116;
-    border: none;
-    border-radius: 7px;
+#hintButton {
+    padding: 12px 22px;
+    background: var(--orange);
+    color: #FFFFFF;
+    border: 1px solid var(--orange);
+    border-radius: 12px;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.2s ease;
 }
 
-#submitAnswer {
-    width: auto;
-    margin: 12px 0;
+#hintButton:hover:not(:disabled) {
+    background: var(--orange-hover);
+    box-shadow: 0 4px 12px rgba(85, 65, 45, 0.12);
 }
 
-#nextPuzzle {
-    width: 100%;
-    max-width: 300px;
-    margin-top: 15px;
-}
-
-.game-container button:hover:not(:disabled) {
-    background: #FFE785;
-}
-
-.game-container button:disabled {
-    opacity: 0.5;
+#hintButton:disabled {
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
-/* Feedback message */
-#gameMessage {
-    min-height: 24px;
-    margin: 20px 0;
-    color: #F4D35E;
-    font-weight: bold;
+#hintMessage {
+    margin: 12px 0 0;
+    color: var(--brown-muted);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
 }
 
-/* Mobile-friendly layout */
-@media (max-width: 520px) {
+#hintMessage:not(:empty) {
+    padding: 12px;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+/* ==========================================
+   GAME MESSAGES
+========================================== */
+
+.game-message {
+    min-height: 24px;
+    margin: 18px 0 0;
+    color: var(--brown-muted);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   SUCCESS CELEBRATION
+========================================== */
+
+.celebration {
+    min-height: 0;
+    margin-top: 8px;
+    color: var(--success);
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.celebration:not(:empty) {
+    padding: 14px;
+    background: #F0F6E7;
+    border: 1px solid #D0DFB9;
+    border-radius: 12px;
+    animation: celebrate-pop 0.45s ease;
+}
+
+@keyframes celebrate-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+
+    70% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.game-footer {
+    padding: 24px 10px;
+    color: var(--brown-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+
+@media (max-width: 700px) {
+
+    .game-header {
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .game-navigation {
+        order: 3;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 560px) {
+
     body {
+        padding: 16px;
+    }
+
+    .game-logo {
+        font-size: 17px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .puzzle-card {
+        padding: 20px;
+    }
+
+    .challenge-tag {
+        margin-left: 0;
+    }
+
+    .progress-labels {
+        font-size: 11px;
+    }
+
+    .game-actions {
+        flex-direction: column;
+    }
+
+    .game-actions button {
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    .hint-section {
         padding: 14px;
     }
 
-    .game-container {
-        padding: 20px 15px;
-    }
-
-    .game-container h1 {
-        font-size: 25px;
-    }
-
-    #answerInput {
-        max-width: 100%;
-    }
-
-    #submitAnswer {
+    #hintButton {
         width: 100%;
+    }
+}
+
+/* ==========================================
+   ACCESSIBILITY
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

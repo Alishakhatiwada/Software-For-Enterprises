@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BananaAPI-Quest | Puzzle History</title>
+
+    <link rel="stylesheet" href="css/puzzle-history.css">
+</head>
+
+<body>
+
+    <main class="history-container">
+
+        <!-- Header -->
+        <header class="history-header">
+
+            <a href="game.html" class="logo">
+                🍌 Banana<span>API</span>-Quest
+            </a>
+
+            <nav class="history-navigation">
+                <a href="game.html" class="nav-link">← Back to Game</a>
+                <a href="leaderboard.html" class="nav-link">🏆 Leaderboard</a>
+            </nav>
+
+        </header>
+
+        <!-- Page Heading -->
+        <section class="page-heading">
+
+            <p class="eyebrow">YOUR PUZZLE JOURNEY</p>
+
+            <h1>📜 Puzzle History</h1>
+
+            <p>
+                Keep track of your puzzle attempts, results,
+                and the points you have earned.
+            </p>
+
+        </section>
+
+        <!-- Statistics -->
+        <section class="history-stats">
+
+            <div class="history-stat-card">
+                <span>🧩</span>
+                <div>
+                    <p>Puzzles Attempted</p>
+                    <h2 id="attemptedCount">0</h2>
+                </div>
+            </div>
+
+            <div class="history-stat-card">
+                <span>✅</span>
+                <div>
+                    <p>Puzzles Solved</p>
+                    <h2 id="historySolvedCount">0</h2>
+                </div>
+            </div>
+
+            <div class="history-stat-card">
+                <span>⭐</span>
+                <div>
+                    <p>Points Earned</p>
+                    <h2 id="historyPoints">0</h2>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- History Table -->
+        <section class="history-section">
+
+            <div class="history-section-heading">
+                <div>
+                    <h2>Your Activity</h2>
+                    <p>Review your previous puzzle attempts.</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Puzzle</th>
+                            <th>Date</th>
+                            <th>Your Answer</th>
+                            <th>Points</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="historyTableBody">
+
+                    </tbody>
+
+                </table>
+
+                <!-- Empty State -->
+                <div id="emptyHistory" class="empty-history">
+
+                    <div class="empty-icon">🧩</div>
+
+                    <h3>No Puzzle History Yet</h3>
+
+                    <p>
+                        Your completed puzzle activity will appear here
+                        when you start solving puzzles.
+                    </p>
+
+                    <a href="game.html" class="play-button">
+                        Start Solving 🍌
+                    </a>
+
+                </div>
+
+            </div>
+
+            <p id="historyMessage" class="history-message"
+               aria-live="polite"></p>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="history-footer">
+            <p>🍌 Every puzzle you solve is a step forward!</p>
+        </footer>
+
+    </main>
+
+    <script src="js/auth-check.js"></script>
+    <script src="js/puzzle-history.js"></script>
+
+</body>
+</html>

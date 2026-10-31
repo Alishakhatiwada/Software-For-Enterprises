@@ -1,0 +1,257 @@
+/* BananaAPI-Quest - Simple Home Page */
+
+:root {
+    --cream: #FFF4DF;
+    --warm-white: #FFFDF7;
+    --honey: #F4C66A;
+    --orange: #E89B45;
+    --orange-hover: #D98232;
+    --cocoa: #55412D;
+    --brown-muted: #765C3E;
+    --border-color: #E8D7B8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--cream);
+    color: var(--cocoa);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Navigation */
+
+.navbar {
+    padding: 20px 8%;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: bold;
+}
+
+/* Main Welcome Section */
+
+.hero {
+    flex: 1;
+    width: 100%;
+    max-width: 1150px;
+    margin: auto;
+    padding: 65px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 45px;
+}
+
+.hero-content {
+    flex: 1;
+    max-width: 600px;
+}
+
+.eyebrow {
+    margin-bottom: 15px;
+    color: var(--orange-hover);
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.hero h1 {
+    margin-bottom: 20px;
+    color: var(--cocoa);
+    font-size: clamp(36px, 5vw, 54px);
+    line-height: 1.2;
+}
+
+.hero h1 span {
+    color: var(--orange-hover);
+}
+
+.hero-description {
+    max-width: 500px;
+    margin-bottom: 28px;
+    color: var(--brown-muted);
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+/* Buttons */
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--orange);
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background: var(--orange-hover);
+}
+
+.btn-secondary {
+    background: var(--warm-white);
+    border-color: var(--border-color);
+    color: var(--cocoa);
+}
+
+.btn-secondary:hover {
+    background: var(--honey);
+}
+
+/* Puzzle Preview */
+
+.puzzle-preview {
+    flex: 0 0 300px;
+    padding: 32px 25px;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(85, 65, 45, 0.08);
+    text-align: center;
+}
+
+.banana-icon {
+    margin-bottom: 15px;
+    font-size: 76px;
+}
+
+.puzzle-preview h2 {
+    margin-bottom: 10px;
+    font-size: 23px;
+}
+
+.puzzle-preview p {
+    color: var(--brown-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Feature Cards */
+
+.features {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 10px 30px 55px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.feature-card {
+    padding: 22px 16px;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    text-align: center;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--orange);
+}
+
+.feature-card span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.feature-card h3 {
+    margin-bottom: 6px;
+    font-size: 17px;
+}
+
+.feature-card p {
+    color: var(--brown-muted);
+    font-size: 13px;
+}
+
+/* Footer */
+
+footer {
+    padding: 20px;
+    background: var(--warm-white);
+    border-top: 1px solid var(--border-color);
+    color: var(--brown-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Responsive Layout */
+
+@media (max-width: 700px) {
+    .hero {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 45px 24px;
+        gap: 30px;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .puzzle-preview {
+        flex-basis: auto;
+        width: 100%;
+        max-width: 400px;
+        align-self: center;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+        padding: 0 24px 40px;
+    }
+}
+
+@media (max-width: 400px) {
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+}
+
