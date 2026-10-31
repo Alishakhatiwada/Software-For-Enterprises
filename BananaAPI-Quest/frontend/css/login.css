@@ -1,62 +1,65 @@
+/* Login */
+
+:root {
+    --cream: #FFF4DF;
+    --warm-white: #FFFDF7;
+    --orange: #E89B45;
+    --orange-hover: #D98232;
+    --cocoa: #55412D;
+    --brown-muted: #765C3E;
+    --border-color: #E8D7B8;
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    padding: 20px;
-    background: #FFF4DF;
-    color: #55412D;
-    font-family: Arial, sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    background: var(--cream);
+    color: var(--cocoa);
+    font-family: Arial, sans-serif;
 }
-
-/* Main Container */
 
 .auth-container {
     width: 100%;
     max-width: 450px;
-    margin: auto;
 }
-
-/* Back Link */
 
 .back-link {
     display: inline-block;
     margin-bottom: 18px;
-    color: #765C3E;
+    color: var(--brown-muted);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .back-link:hover {
-    color: #D98232;
+    color: var(--orange-hover);
 }
 
-/* Login Card */
+/* Card */
 
 .auth-card {
     padding: 30px;
-    background: #FFFDF7;
-    border: 1px solid #E8D7B8;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
     border-radius: 22px;
-    box-shadow: 0 12px 35px rgba(85, 65, 45, 0.10);
+    box-shadow: 0 12px 35px rgba(85, 65, 45, 0.1);
 }
-
-/* Icon */
 
 .book-icon {
     font-size: 42px;
     text-align: center;
 }
 
-/* Headings */
-
 .eyebrow {
-    color: #D98232;
+    color: var(--orange-hover);
     font-size: 12px;
     font-weight: bold;
     letter-spacing: 2px;
@@ -67,32 +70,28 @@ h1 {
     margin: 16px 0;
     font-size: 30px;
     text-align: center;
-    color: #55412D;
 }
 
 .subtitle {
     margin-bottom: 25px;
-    color: #765C3E;
+    color: var(--brown-muted);
     line-height: 1.7;
     text-align: center;
 }
 
-/* Form Labels */
+/* Form */
 
 form label {
     display: block;
     margin: 17px 0 8px;
     font-size: 14px;
-    color: #55412D;
 }
-
-/* Input Fields */
 
 form input {
     width: 100%;
     padding: 13px;
-    background: #FFF4DF;
-    color: #55412D;
+    background: var(--cream);
+    color: var(--cocoa);
     border: 1px solid #E8C77F;
     border-radius: 12px;
     font-size: 15px;
@@ -101,8 +100,8 @@ form input {
 
 form input:focus {
     outline: none;
-    border-color: #E89B45;
-    box-shadow: 0 0 0 3px rgba(232, 155, 69, 0.20);
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(232, 155, 69, 0.2);
 }
 
 form input::placeholder {
@@ -110,13 +109,11 @@ form input::placeholder {
     opacity: 0.9;
 }
 
-/* Login Button */
-
 button {
     width: 100%;
     margin-top: 22px;
     padding: 14px;
-    background: #E89B45;
+    background: var(--orange);
     color: #FFFFFF;
     border: none;
     border-radius: 14px;
@@ -127,7 +124,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-    background: #D98232;
+    background: var(--orange-hover);
     transform: translateY(-2px);
 }
 
@@ -138,50 +135,45 @@ button:active:not(:disabled) {
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
 }
-
-/* Form Feedback Message */
 
 .form-message {
     min-height: 20px;
     margin-top: 10px;
-    color: #765C3E;
+    color: var(--brown-muted);
     font-size: 14px;
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
 
-/* Register Link */
+/* Bottom links */
 
 .switch-page {
     margin-top: 22px;
-    color: #765C3E;
+    color: var(--brown-muted);
     font-size: 14px;
     text-align: center;
 }
 
 .switch-page a {
-    color: #D98232;
+    color: var(--orange-hover);
     font-weight: bold;
     text-decoration: none;
 }
 
 .switch-page a:hover {
-    color: #55412D;
+    color: var(--cocoa);
     text-decoration: underline;
 }
 
-/* Footer */
-
 .footer-text {
     margin-top: 20px;
-    color: #765C3E;
+    color: var(--brown-muted);
     font-size: 12px;
     text-align: center;
 }
 
-/* Responsive Design */
+/* Responsive */
 
 @media (max-width: 480px) {
     body {

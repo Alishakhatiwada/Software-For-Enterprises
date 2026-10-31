@@ -6,7 +6,6 @@ const PuzzleHistory = require("../models/PuzzleHistory");
 const HINT_COST = 20;
 const PUZZLE_POINTS = 10;
 
-
 // ==========================================
 // GET A NEW PUZZLE
 // ==========================================
@@ -61,7 +60,6 @@ const submitAnswer = async (req, res) => {
             });
         }
 
-        // Check the answer.
         const result = bananaApi.checkAnswer(
             submittedAnswer,
             puzzleId
@@ -70,7 +68,6 @@ const submitAnswer = async (req, res) => {
         const isCorrect = result.correct;
         const pointsEarned = isCorrect ? PUZZLE_POINTS : 0;
 
-        // Save the submitted answer.
         await PuzzleHistory.create({
             userId,
             puzzleId,
@@ -79,18 +76,14 @@ const submitAnswer = async (req, res) => {
             pointsEarned
         });
 
-        // Find or create the player's progress document.
         let progress = await GameProgress.findOne({ userId });
 
         if (!progress) {
             progress = await GameProgress.create({ userId });
         }
 
-        // Count every submitted answer.
         progress.totalAttempts += 1;
 
-        // Award points only if this puzzle has not
-        // already been counted as solved.
         if (
             isCorrect &&
             !progress.solvedPuzzleIds.includes(puzzleId)
@@ -128,9 +121,11 @@ const submitAnswer = async (req, res) => {
 // ==========================================
 
 const useHint = async (req, res) => {
+    let pointsDeducted = false;
+    const userId = req.user.userId;
+
     try {
         const { puzzleId } = req.body;
-        const userId = req.user.userId;
 
         if (!puzzleId) {
             return res.status(400).json({
@@ -139,16 +134,12 @@ const useHint = async (req, res) => {
             });
         }
 
-        // Check whether the puzzle is still active.
-        const hint = bananaApi.getHint(puzzleId);
-
-        // Deduct points only when the player has
-        // enough points and has not used a hint.
+        // Check that the player has enough points
+        // and deduct 20 points atomically.
         const progress = await GameProgress.findOneAndUpdate(
             {
                 userId,
-                totalPoints: { $gte: HINT_COST },
-                hintedPuzzleIds: { $ne: puzzleId }
+                totalPoints: { $gte: HINT_COST }
             },
             {
                 $inc: {
@@ -162,7 +153,7 @@ const useHint = async (req, res) => {
                 }
             },
             {
-                returnDocument: "after"
+                new: true
             }
         );
 
@@ -170,12 +161,10 @@ const useHint = async (req, res) => {
             const existingProgress =
                 await GameProgress.findOne({ userId });
 
-            if (
-                existingProgress?.hintedPuzzleIds?.includes(puzzleId)
-            ) {
+            if (!existingProgress) {
                 return res.status(400).json({
                     success: false,
-                    message: "You have already used a hint for this puzzle."
+                    message: "Solve a puzzle first to earn points."
                 });
             }
 
@@ -184,6 +173,11 @@ const useHint = async (req, res) => {
                 message: "You need at least 20 points to purchase a hint."
             });
         }
+
+        pointsDeducted = true;
+
+        // Get the next hint after deducting points.
+        const hint = bananaApi.getHint(puzzleId);
 
         return res.status(200).json({
             success: true,
@@ -195,6 +189,22 @@ const useHint = async (req, res) => {
 
     } catch (error) {
         console.error("Use hint error:", error);
+
+        // Refund points if the hint could not be provided.
+        if (pointsDeducted) {
+            try {
+                await GameProgress.findOneAndUpdate(
+                    { userId },
+                    {
+                        $inc: {
+                            totalPoints: HINT_COST
+                        }
+                    }
+                );
+            } catch (refundError) {
+                console.error("Hint refund error:", refundError);
+            }
+        }
 
         return res.status(400).json({
             success: false,

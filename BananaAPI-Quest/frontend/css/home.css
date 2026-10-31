@@ -45,7 +45,7 @@ a {
     font-weight: bold;
 }
 
-/* Main Welcome Section */
+/* Hero */
 
 .hero {
     flex: 1;
@@ -74,7 +74,6 @@ a {
 
 .hero h1 {
     margin-bottom: 20px;
-    color: var(--cocoa);
     font-size: clamp(36px, 5vw, 54px);
     line-height: 1.2;
 }
@@ -126,7 +125,6 @@ a {
 .btn-secondary {
     background: var(--warm-white);
     border-color: var(--border-color);
-    color: var(--cocoa);
 }
 
 .btn-secondary:hover {
@@ -214,7 +212,7 @@ footer {
     text-align: center;
 }
 
-/* Responsive Layout */
+/* Responsive */
 
 @media (max-width: 700px) {
     .hero {
@@ -254,4 +252,3 @@ footer {
         flex-direction: column;
     }
 }
-

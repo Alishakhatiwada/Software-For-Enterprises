@@ -35,14 +35,17 @@ loginForm.addEventListener("submit", async function (event) {
             return;
         }
 
-        if (!data.token) {
+        if (!data.token || !data.user) {
             loginMessage.textContent =
-                "Login response did not contain an authentication token.";
+                "Login response is missing user or authentication information.";
             return;
         }
 
-        // Save the token for the game page.
+        // Save the authentication token.
         localStorage.setItem("token", data.token);
+
+        // Save the logged-in user's information.
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         loginMessage.textContent =
             "Login successful! Starting your game...";

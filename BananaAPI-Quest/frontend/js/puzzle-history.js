@@ -1,4 +1,3 @@
-
 // ==========================================
 // BANANAAPI-QUEST PUZZLE HISTORY
 // Loads real history from MongoDB
@@ -8,23 +7,13 @@ const API_URL = "http://localhost:5000/api/banana";
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-    const attemptedCount =
-        document.getElementById("attemptedCount");
+    const attemptedCount = document.getElementById("attemptedCount");
+    const solvedCount = document.getElementById("historySolvedCount");
+    const pointsCount = document.getElementById("historyPoints");
 
-    const solvedCount =
-        document.getElementById("historySolvedCount");
-
-    const pointsCount =
-        document.getElementById("historyPoints");
-
-    const historyTableBody =
-        document.getElementById("historyTableBody");
-
-    const emptyHistory =
-        document.getElementById("emptyHistory");
-
-    const historyMessage =
-        document.getElementById("historyMessage");
+    const historyTableBody = document.getElementById("historyTableBody");
+    const emptyHistory = document.getElementById("emptyHistory");
+    const historyMessage = document.getElementById("historyMessage");
 
     const token = localStorage.getItem("token");
 
@@ -52,19 +41,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         const stats = data.stats || {};
         const history = data.history || [];
 
-        // Display real statistics
+        // Display statistics
         attemptedCount.textContent = stats.totalAttempts ?? 0;
         solvedCount.textContent = stats.solvedPuzzles ?? 0;
         pointsCount.textContent = stats.totalPoints ?? 0;
 
-        // Clear the table
+        // Clear previous records
         historyTableBody.innerHTML = "";
 
-        if (historyMessage) {
-            historyMessage.textContent = "";
-        }
+        historyMessage.textContent = "";
 
-        // Display empty state if there are no attempts
+        // Show empty state if there is no history
         if (history.length === 0) {
             emptyHistory.style.display = "block";
             return;
@@ -72,23 +59,24 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         emptyHistory.style.display = "none";
 
-        // Display actual history records
+        // Display puzzle history
         history.forEach((item, index) => {
+
             const row = document.createElement("tr");
 
-            const numberCell = document.createElement("td");
-            numberCell.textContent = index + 1;
+            const attemptCell = document.createElement("td");
+            attemptCell.textContent = index + 1;
 
             const answerCell = document.createElement("td");
-            answerCell.textContent = item.submittedAnswer;
+            answerCell.textContent = item.submittedAnswer ?? "-";
 
             const resultCell = document.createElement("td");
             resultCell.textContent = item.isCorrect
-                ? "Correct"
-                : "Incorrect";
+                ? "✅ Correct"
+                : "❌ Incorrect";
 
             const pointsCell = document.createElement("td");
-            pointsCell.textContent = `${item.pointsEarned} ⭐`;
+            pointsCell.textContent = `${item.pointsEarned ?? 0} ⭐`;
 
             const dateCell = document.createElement("td");
 
@@ -96,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 ? new Date(item.attemptedAt).toLocaleString()
                 : "Unknown";
 
-            row.appendChild(numberCell);
+            row.appendChild(attemptCell);
             row.appendChild(answerCell);
             row.appendChild(resultCell);
             row.appendChild(pointsCell);
@@ -106,12 +94,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
 
     } catch (error) {
+
         console.error("Puzzle history error:", error);
 
         emptyHistory.style.display = "none";
 
-        if (historyMessage) {
-            historyMessage.textContent = error.message;
-        }
+        historyMessage.textContent = error.message;
     }
 });

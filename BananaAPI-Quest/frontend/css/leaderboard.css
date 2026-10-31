@@ -1,4 +1,16 @@
-/* General Styling */
+/* Leaderboard */
+
+:root {
+    --cream: #FFF4DF;
+    --warm-white: #FFFDF7;
+    --highlight: #FFF0C9;
+    --honey: #F4C66A;
+    --orange: #E89B45;
+    --orange-hover: #D98232;
+    --cocoa: #55412D;
+    --brown-muted: #765C3E;
+    --border-color: #E8D7B8;
+}
 
 * {
     margin: 0;
@@ -7,10 +19,10 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #FFF4DF;
-    color: #55412D;
     min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: var(--cream);
+    color: var(--cocoa);
 }
 
 .leaderboard-container {
@@ -31,47 +43,47 @@ body {
 }
 
 .logo {
-    text-decoration: none;
+    color: var(--cocoa);
     font-size: 23px;
     font-weight: bold;
-    color: #55412D;
+    text-decoration: none;
 }
 
 .logo span {
-    color: #E89B45;
+    color: var(--orange);
 }
 
 .back-button {
-    text-decoration: none;
-    color: #55412D;
-    background: #F4C66A;
     padding: 11px 18px;
+    background: var(--honey);
+    color: var(--cocoa);
     border-radius: 12px;
     font-weight: bold;
+    text-decoration: none;
 }
 
 /* Heading */
 
 .page-heading {
-    text-align: center;
     margin-bottom: 35px;
+    text-align: center;
 }
 
 .eyebrow {
-    color: #D98232;
+    margin-bottom: 12px;
+    color: var(--orange-hover);
     font-size: 12px;
     font-weight: bold;
     letter-spacing: 2px;
-    margin-bottom: 12px;
 }
 
 .page-heading h1 {
-    font-size: 38px;
     margin-bottom: 12px;
+    font-size: 38px;
 }
 
 .page-heading p {
-    color: #765C3E;
+    color: var(--brown-muted);
     line-height: 1.6;
 }
 
@@ -81,23 +93,23 @@ body {
     display: flex;
     justify-content: space-around;
     gap: 20px;
-    background: #FFFDF7;
-    border: 1px solid #E8D7B8;
-    border-radius: 18px;
-    padding: 25px;
     margin-bottom: 35px;
+    padding: 25px;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
 }
 
 .ranking-label {
+    margin-bottom: 10px;
+    color: var(--brown-muted);
     font-size: 12px;
     font-weight: bold;
-    color: #765C3E;
-    margin-bottom: 10px;
 }
 
 .my-ranking h2 {
+    color: var(--orange-hover);
     font-size: 25px;
-    color: #D98232;
 }
 
 /* Top Three */
@@ -105,7 +117,7 @@ body {
 .top-players {
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
     gap: 18px;
     margin-bottom: 45px;
 }
@@ -113,22 +125,21 @@ body {
 .player-card {
     flex: 1;
     max-width: 260px;
-    text-align: center;
     padding: 25px 15px;
-    background: #FFFDF7;
-    border: 1px solid #E8D7B8;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
     border-radius: 18px;
+    text-align: center;
 }
 
 .first-place {
-    padding-top: 38px;
-    padding-bottom: 38px;
-    background: #FFF0C9;
+    padding: 38px 15px;
+    background: var(--highlight);
 }
 
 .medal {
-    font-size: 38px;
     margin-bottom: 12px;
+    font-size: 38px;
 }
 
 .player-card h3 {
@@ -137,12 +148,12 @@ body {
 }
 
 .player-card p {
-    color: #765C3E;
     margin-bottom: 12px;
+    color: var(--brown-muted);
 }
 
 .player-card strong {
-    color: #D98232;
+    color: var(--orange-hover);
 }
 
 /* Ranking Table */
@@ -153,59 +164,58 @@ body {
 
 .table-wrapper {
     overflow-x: auto;
-    background: #FFFDF7;
-    border: 1px solid #E8D7B8;
+    background: var(--warm-white);
+    border: 1px solid var(--border-color);
     border-radius: 15px;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
     min-width: 550px;
+    border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 17px;
     text-align: left;
-    border-bottom: 1px solid #E8D7B8;
+    border-bottom: 1px solid var(--border-color);
 }
 
 th {
-    background: #F4C66A;
-    color: #55412D;
+    background: var(--honey);
 }
 
 td {
-    color: #765C3E;
+    color: var(--brown-muted);
 }
 
 tbody tr:last-child td {
     border-bottom: none;
 }
 
-tbody tr.current-player {
-    background: #FFF0C9;
+.current-player {
+    background: var(--highlight);
     font-weight: bold;
 }
 
 .message {
-    text-align: center;
     margin-top: 15px;
-    color: #765C3E;
+    color: var(--brown-muted);
+    text-align: center;
 }
 
 /* Footer */
 
 footer {
-    text-align: center;
     padding: 35px 0 15px;
-    color: #765C3E;
+    color: var(--brown-muted);
+    text-align: center;
 }
 
-/* Responsive Design */
+/* Responsive */
 
 @media (max-width: 650px) {
-
     .leaderboard-header {
         flex-direction: column;
     }

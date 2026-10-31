@@ -38,9 +38,12 @@
         <section class="welcome-section">
             <p class="eyebrow">YOUR PUZZLE ADVENTURE</p>
 
-            <h1>Ready to Solve a Puzzle?</h1>
+            <h1>
+                Ohhh hii, <span id="loggedInUser">Player</span>! 👋
+            </h1>
 
             <p>
+                Ready to solve some puzzles?
                 Look carefully at the picture, think logically,
                 and find the correct answer!
             </p>
@@ -195,7 +198,27 @@
 
     </main>
 
+    <!-- Authentication Check -->
     <script src="js/auth-check.js"></script>
+
+    <!-- Display Logged-in User -->
+    <script>
+        const savedUser = localStorage.getItem("user");
+
+        if (savedUser) {
+            try {
+                const user = JSON.parse(savedUser);
+
+                document.getElementById("loggedInUser").textContent =
+                    user.name || "Player";
+
+            } catch (error) {
+                console.error("Unable to load user information:", error);
+            }
+        }
+    </script>
+
+    <!-- Game Functionality -->
     <script src="js/game.js"></script>
 
 </body>

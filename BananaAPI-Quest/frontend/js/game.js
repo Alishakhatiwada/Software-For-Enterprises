@@ -5,10 +5,7 @@
 
 const API_BASE_URL = "http://localhost:5000/api";
 
-// ==========================================
-// HTML ELEMENTS
-// ==========================================
-
+// HTML elements
 const puzzleImage = document.getElementById("puzzleImage");
 const answerInput = document.getElementById("answerInput");
 const submitButton = document.getElementById("submitAnswer");
@@ -23,22 +20,17 @@ const progressTrack = document.getElementById("progressTrack");
 const celebration = document.getElementById("celebration");
 const pointsCount = document.getElementById("pointsCount");
 
-// Hint elements
 const hintButton = document.getElementById("hintButton");
 const hintMessage = document.getElementById("hintMessage");
 
-// Hint cost
 const HINT_COST = 20;
 
-// ==========================================
-// GAME VARIABLES
-// ==========================================
-
+// Game variables
 let currentPuzzleId = null;
 let currentPuzzleSolved = false;
-let hintUsed = false;
 let answerSubmitting = false;
 let hintRequestInProgress = false;
+let hintsUsed = 0;
 
 
 // ==========================================
@@ -55,7 +47,6 @@ function getToken() {
 // ==========================================
 
 async function apiRequest(endpoint, options = {}) {
-
     const token = getToken();
 
     if (!token) {
@@ -66,10 +57,8 @@ async function apiRequest(endpoint, options = {}) {
     let response;
 
     try {
-
         response = await fetch(`${API_BASE_URL}${endpoint}`, {
             ...options,
-
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
@@ -78,7 +67,6 @@ async function apiRequest(endpoint, options = {}) {
         });
 
     } catch (error) {
-
         console.error("Network error:", error);
 
         throw new Error(
@@ -86,38 +74,31 @@ async function apiRequest(endpoint, options = {}) {
         );
     }
 
-    // Read response as text first.
     const responseText = await response.text();
 
     let data;
 
-    // Safely convert the response into JSON.
     try {
-
         data = JSON.parse(responseText);
 
     } catch (error) {
-
         console.error("Invalid API response:", responseText);
 
         throw new Error(
-            `The backend returned HTML or invalid JSON instead of JSON. HTTP Status: ${response.status}. Check your API URL and backend routes.`
+            `Invalid backend response. HTTP Status: ${response.status}.`
         );
     }
 
-    // Handle authentication errors.
     if (response.status === 401) {
-
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
 
         window.location.href = "login.html";
 
         throw new Error("Your session has expired. Please log in again.");
     }
 
-    // Handle other API errors.
     if (!response.ok || data.success === false) {
-
         throw new Error(
             data.message || `Request failed with status ${response.status}.`
         );
@@ -132,7 +113,6 @@ async function apiRequest(endpoint, options = {}) {
 // ==========================================
 
 function updateProgress(progress = {}) {
-
     const solved = Number(progress.solvedPuzzles) || 0;
     const points = Number(progress.totalPoints) || 0;
 
@@ -148,10 +128,8 @@ function updateProgress(progress = {}) {
     const remaining = nextMilestone - solved;
 
     if (achievementText) {
-
         achievementText.textContent =
             `${remaining} more puzzles to reach ${nextMilestone}!`;
-
     }
 
     const percentage = (solved % 5) * 20;
@@ -165,56 +143,37 @@ function updateProgress(progress = {}) {
     }
 
     if (progressTrack) {
-
         progressTrack.setAttribute(
             "aria-valuenow",
             String(percentage)
         );
-
     }
 }
 
 
 // ==========================================
-// LOAD SAVED PROGRESS FROM MONGODB
+// LOAD SAVED PROGRESS
 // ==========================================
 
 async function loadSavedProgress() {
-
     const data = await apiRequest("/banana/history");
 
-    if (data.stats) {
-
-        updateProgress(data.stats);
-
-    } else if (data.progress) {
-
-        updateProgress(data.progress);
-
-    } else {
-
-        console.warn("No progress information returned by the backend.");
-
-    }
+    updateProgress(data.stats || {});
 }
 
 
 // ==========================================
-// RESET HINT FOR A NEW PUZZLE
+// RESET HINTS FOR A NEW PUZZLE
 // ==========================================
 
 function resetHint() {
-
-    hintUsed = false;
+    hintsUsed = 0;
     hintRequestInProgress = false;
 
     if (hintButton) {
-
         hintButton.disabled = false;
-
         hintButton.textContent =
-            `💡 Get a Hint (${HINT_COST} Points)`;
-
+            `💡 Hint:`;
     }
 
     if (hintMessage) {
@@ -228,9 +187,7 @@ function resetHint() {
 // ==========================================
 
 async function loadPuzzle() {
-
     try {
-
         currentPuzzleId = null;
         currentPuzzleSolved = false;
         answerSubmitting = false;
@@ -242,10 +199,8 @@ async function loadPuzzle() {
         }
 
         if (answerInput) {
-
             answerInput.value = "";
             answerInput.disabled = true;
-
         }
 
         if (submitButton) {
@@ -266,26 +221,26 @@ async function loadPuzzle() {
 
         const data = await apiRequest("/banana/puzzle");
 
-        if (!data.puzzle || !data.puzzle.puzzleId || !data.puzzle.question) {
-
-            throw new Error("The backend returned incomplete puzzle information.");
-
+        if (
+            !data.puzzle ||
+            !data.puzzle.puzzleId ||
+            !data.puzzle.question
+        ) {
+            throw new Error(
+                "The backend returned incomplete puzzle information."
+            );
         }
 
         currentPuzzleId = data.puzzle.puzzleId;
 
         if (puzzleImage) {
-
             puzzleImage.src = data.puzzle.question;
             puzzleImage.style.display = "block";
-
         }
 
         if (answerInput) {
-
             answerInput.disabled = false;
             answerInput.focus();
-
         }
 
         if (submitButton) {
@@ -293,22 +248,17 @@ async function loadPuzzle() {
         }
 
         if (message) {
-
             message.textContent =
                 "Solve the puzzle and enter your answer!";
-
         }
 
     } catch (error) {
-
         console.error("Puzzle loading error:", error);
 
         if (message) {
             message.textContent = error.message;
         }
-
     }
-
 }
 
 
@@ -317,20 +267,15 @@ async function loadPuzzle() {
 // ==========================================
 
 async function getPuzzleHint() {
-
     if (
         !currentPuzzleId ||
         currentPuzzleSolved ||
-        hintUsed ||
         hintRequestInProgress
     ) {
-
         return;
-
     }
 
     try {
-
         hintRequestInProgress = true;
 
         if (hintButton) {
@@ -342,39 +287,48 @@ async function getPuzzleHint() {
         }
 
         const data = await apiRequest("/banana/hint", {
-
             method: "POST",
-
             body: JSON.stringify({
                 puzzleId: currentPuzzleId
             })
-
         });
 
-        // Hint successfully purchased.
-        hintUsed = true;
-
-        // Update points from the backend.
+        // Update the points shown on the page.
         if (data.progress) {
             updateProgress(data.progress);
         }
 
-        if (hintMessage) {
+        hintsUsed++;
 
-            hintMessage.textContent =
-                `💡 Hint: ${data.hint}`;
+        // The backend returns a hint object.
+        const hintText =
+            typeof data.hint === "string"
+                ? data.hint
+                : data.hint?.message;
 
+        if (!hintText) {
+            throw new Error("The server did not return a valid hint.");
         }
 
+        // Display the actual hint message.
+        if (hintMessage) {
+            const hintLine = document.createElement("p");
+
+            hintLine.textContent =
+                `💡 Hint ${data.hint.hintNumber || hintsUsed}: ${hintText}`;
+
+            hintMessage.appendChild(hintLine);
+        }
+
+        // Update the button for another hint.
         if (hintButton) {
+            hintButton.textContent =
+                `💡 Get Another Hint (${HINT_COST} Points)`;
 
-            hintButton.textContent = "Hint Used";
-            hintButton.disabled = true;
-
+            hintButton.disabled = false;
         }
 
     } catch (error) {
-
         console.error("Hint error:", error);
 
         if (hintMessage) {
@@ -386,11 +340,8 @@ async function getPuzzleHint() {
         }
 
     } finally {
-
         hintRequestInProgress = false;
-
     }
-
 }
 
 
@@ -399,35 +350,28 @@ async function getPuzzleHint() {
 // ==========================================
 
 async function checkAnswer() {
-
     if (
         !currentPuzzleId ||
         currentPuzzleSolved ||
         answerSubmitting
     ) {
-
         return;
-
     }
 
     const answer = answerInput.value.trim();
 
-    // Validate the answer.
     if (
         answer === "" ||
         !Number.isFinite(Number(answer))
     ) {
-
         if (message) {
             message.textContent = "Please enter a valid number.";
         }
 
         return;
-
     }
 
     try {
-
         answerSubmitting = true;
 
         if (submitButton) {
@@ -447,70 +391,44 @@ async function checkAnswer() {
         }
 
         const data = await apiRequest("/banana/answer", {
-
             method: "POST",
-
             body: JSON.stringify({
-
                 answer: Number(answer),
                 puzzleId: currentPuzzleId
-
             })
-
         });
 
         currentPuzzleSolved = true;
 
-        // Correct answer.
         if (data.correct) {
-
             if (message) {
-
                 message.textContent =
                     "🎉 Correct! You solved the puzzle!";
-
             }
 
             if (celebration) {
-
                 celebration.textContent =
                     `+${data.pointsEarned} points! 🍌`;
-
             }
 
-        }
-
-        // Incorrect answer.
-        else {
-
+        } else {
             if (message) {
-
                 message.textContent =
                     `❌ Incorrect! The correct answer is ${data.correctAnswer}.`;
-
             }
 
             if (celebration) {
-
                 celebration.textContent =
                     "Keep learning! Try the next puzzle. 🍌";
-
             }
-
         }
 
-        // Update progress from MongoDB.
         if (data.progress) {
-
             updateProgress(data.progress);
-
         } else {
-
             await loadSavedProgress();
-
         }
 
-        // Enable the next puzzle button.
         if (nextButton) {
             nextButton.disabled = false;
         }
@@ -520,14 +438,12 @@ async function checkAnswer() {
         }
 
     } catch (error) {
-
         console.error("Answer submission error:", error);
 
         if (message) {
             message.textContent = error.message;
         }
 
-        // Allow the user to try again if submission failed.
         if (answerInput) {
             answerInput.disabled = false;
         }
@@ -536,16 +452,13 @@ async function checkAnswer() {
             submitButton.disabled = false;
         }
 
-        if (hintButton && !hintUsed) {
+        if (hintButton && !currentPuzzleSolved) {
             hintButton.disabled = false;
         }
 
     } finally {
-
         answerSubmitting = false;
-
     }
-
 }
 
 
@@ -554,44 +467,23 @@ async function checkAnswer() {
 // ==========================================
 
 if (submitButton) {
-
-    submitButton.addEventListener(
-        "click",
-        checkAnswer
-    );
-
+    submitButton.addEventListener("click", checkAnswer);
 }
 
 if (nextButton) {
-
-    nextButton.addEventListener(
-        "click",
-        loadPuzzle
-    );
-
+    nextButton.addEventListener("click", loadPuzzle);
 }
 
 if (hintButton) {
-
-    hintButton.addEventListener(
-        "click",
-        getPuzzleHint
-    );
-
+    hintButton.addEventListener("click", getPuzzleHint);
 }
 
 if (answerInput) {
-
     answerInput.addEventListener("keydown", event => {
-
         if (event.key === "Enter") {
-
             checkAnswer();
-
         }
-
     });
-
 }
 
 
@@ -600,27 +492,17 @@ if (answerInput) {
 // ==========================================
 
 async function startGame() {
-
     try {
-
-        // Load saved progress first.
         await loadSavedProgress();
-
-        // Load the first puzzle.
         await loadPuzzle();
 
     } catch (error) {
-
         console.error("Game startup error:", error);
 
         if (message) {
             message.textContent = error.message;
         }
-
     }
-
 }
 
-
-// Start the game.
 startGame();

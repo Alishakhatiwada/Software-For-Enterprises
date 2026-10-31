@@ -1,9 +1,4 @@
-
-/* ==========================================
-   BANANA API QUEST - GAME CSS
-========================================== */
-
-/* CSS Variables */
+/* Banana API Quest - Game CSS */
 
 :root {
     --cream: #FFF4DF;
@@ -11,14 +6,13 @@
     --honey: #F4C66A;
     --orange: #E89B45;
     --orange-hover: #D98232;
-    --soft-lime: #D9E5B2;
     --cocoa: #55412D;
     --brown-muted: #765C3E;
     --border-color: #E8D7B8;
     --success: #567A43;
 }
 
-/* General Styling */
+/* General */
 
 * {
     box-sizing: border-box;
@@ -41,10 +35,7 @@ input {
 
 button {
     cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover:not(:disabled) {
@@ -54,10 +45,7 @@ button:hover:not(:disabled) {
 button:disabled {
     opacity: 0.55;
     cursor: not-allowed;
-    transform: none;
 }
-
-/* Main Container */
 
 .game-container {
     width: 100%;
@@ -65,9 +53,7 @@ button:disabled {
     margin: 0 auto;
 }
 
-/* ==========================================
-   HEADER
-========================================== */
+/* Header */
 
 .game-header {
     display: flex;
@@ -89,8 +75,6 @@ button:disabled {
 }
 
 .logout-button {
-    width: auto;
-    margin: 0;
     padding: 10px 16px;
     background: var(--warm-white);
     color: var(--cocoa);
@@ -102,8 +86,6 @@ button:disabled {
 .logout-button:hover {
     background: var(--honey);
 }
-
-/* Game Navigation */
 
 .game-navigation {
     display: flex;
@@ -128,9 +110,7 @@ button:disabled {
     transform: translateY(-2px);
 }
 
-/* ==========================================
-   WELCOME SECTION
-========================================== */
+/* Welcome */
 
 .welcome-section {
     margin-bottom: 28px;
@@ -147,7 +127,6 @@ button:disabled {
 
 .welcome-section h1 {
     margin: 0 0 10px;
-    color: var(--cocoa);
     font-size: clamp(30px, 5vw, 42px);
     line-height: 1.25;
 }
@@ -157,9 +136,7 @@ button:disabled {
     color: var(--brown-muted);
 }
 
-/* ==========================================
-   STATISTICS CARDS
-========================================== */
+/* Stats */
 
 .stats-grid {
     display: grid;
@@ -191,13 +168,10 @@ button:disabled {
 
 .stat-card h2 {
     margin: 0;
-    color: var(--cocoa);
     font-size: 22px;
 }
 
-/* ==========================================
-   PROGRESS SECTION
-========================================== */
+/* Progress */
 
 .progress-section {
     margin-bottom: 24px;
@@ -232,18 +206,12 @@ button:disabled {
 .progress-fill {
     width: 0;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        var(--honey),
-        var(--orange)
-    );
+    background: linear-gradient(90deg, var(--honey), var(--orange));
     border-radius: inherit;
     transition: width 0.5s ease;
 }
 
-/* ==========================================
-   PUZZLE CARD
-========================================== */
+/* Puzzle card */
 
 .puzzle-card {
     padding: 30px;
@@ -283,7 +251,6 @@ button:disabled {
 
 .puzzle-card > h2 {
     margin: 24px 0 8px;
-    color: var(--cocoa);
     font-size: clamp(23px, 4vw, 30px);
 }
 
@@ -292,10 +259,6 @@ button:disabled {
     color: var(--brown-muted);
     font-size: 14px;
 }
-
-/* ==========================================
-   PUZZLE IMAGE
-========================================== */
 
 .puzzle-image-area {
     display: flex;
@@ -316,14 +279,11 @@ button:disabled {
     border-radius: 8px;
 }
 
-/* ==========================================
-   ANSWER INPUT
-========================================== */
+/* Answer input */
 
 .puzzle-card label {
     display: block;
     margin-bottom: 9px;
-    color: var(--cocoa);
     font-size: 12px;
     font-weight: bold;
     letter-spacing: 1px;
@@ -349,9 +309,7 @@ button:disabled {
     box-shadow: 0 0 0 3px rgba(232, 155, 69, 0.18);
 }
 
-/* ==========================================
-   GAME BUTTONS
-========================================== */
+/* Buttons */
 
 .game-actions {
     display: flex;
@@ -387,9 +345,7 @@ button:disabled {
     background: #F8D786;
 }
 
-/* ==========================================
-   HINT FEATURE
-========================================== */
+/* Hint */
 
 .hint-section {
     margin-top: 20px;
@@ -408,18 +364,11 @@ button:disabled {
     border-radius: 12px;
     font-size: 14px;
     font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s ease;
 }
 
 #hintButton:hover:not(:disabled) {
     background: var(--orange-hover);
     box-shadow: 0 4px 12px rgba(85, 65, 45, 0.12);
-}
-
-#hintButton:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
 }
 
 #hintMessage {
@@ -438,9 +387,7 @@ button:disabled {
     border-radius: 10px;
 }
 
-/* ==========================================
-   GAME MESSAGES
-========================================== */
+/* Messages */
 
 .game-message {
     min-height: 24px;
@@ -450,12 +397,7 @@ button:disabled {
     overflow-wrap: anywhere;
 }
 
-/* ==========================================
-   SUCCESS CELEBRATION
-========================================== */
-
 .celebration {
-    min-height: 0;
     margin-top: 8px;
     color: var(--success);
     font-size: 16px;
@@ -476,20 +418,16 @@ button:disabled {
         opacity: 0;
         transform: scale(0.94);
     }
-
     70% {
         transform: scale(1.02);
     }
-
     100% {
         opacity: 1;
         transform: scale(1);
     }
 }
 
-/* ==========================================
-   FOOTER
-========================================== */
+/* Footer */
 
 .game-footer {
     padding: 24px 10px;
@@ -498,15 +436,11 @@ button:disabled {
     text-align: center;
 }
 
-/* ==========================================
-   RESPONSIVE DESIGN
-========================================== */
+/* Responsive */
 
 @media (max-width: 700px) {
-
     .game-header {
         flex-wrap: wrap;
-        gap: 15px;
         margin-bottom: 30px;
     }
 
@@ -523,7 +457,6 @@ button:disabled {
 }
 
 @media (max-width: 560px) {
-
     body {
         padding: 16px;
     }
@@ -553,7 +486,6 @@ button:disabled {
     }
 
     .game-actions button {
-        width: 100%;
         flex-basis: auto;
     }
 
@@ -566,17 +498,13 @@ button:disabled {
     }
 }
 
-/* ==========================================
-   ACCESSIBILITY
-========================================== */
+/* Accessibility */
 
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
     }
 }
