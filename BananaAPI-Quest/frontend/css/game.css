@@ -136,11 +136,11 @@ button:disabled {
     color: var(--brown-muted);
 }
 
-/* Statistics Grid - 4 Columns */
+/* Statistics Grid - 3 Clean Columns */
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
     margin-bottom: 20px;
 }
@@ -224,6 +224,7 @@ button:disabled {
 .puzzle-card-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
     color: var(--brown-muted);
@@ -232,11 +233,90 @@ button:disabled {
     letter-spacing: 1px;
 }
 
+.puzzle-header-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
 .live-dot {
     width: 9px;
     height: 9px;
     background: var(--success);
     border-radius: 50%;
+}
+
+.puzzle-header-side {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+/* Lives Badge: Small Red Hearts displayed cleanly on the side */
+.lives-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: var(--cream);
+    border: 1.5px solid #F5C2C7;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--cocoa);
+    transition: all 0.3s ease;
+}
+
+.lives-badge:hover {
+    background: #FFF0F3;
+    border-color: #E63946;
+}
+
+.lives-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #A91E2C;
+    font-weight: 800;
+}
+
+.lives-hearts {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.heart-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px; /* Small red heart */
+    line-height: 1;
+    transition: transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease;
+}
+
+.heart-icon.active {
+    opacity: 1;
+    filter: drop-shadow(0 1px 2px rgba(220, 53, 69, 0.45));
+    animation: heart-pop 0.35s ease;
+}
+
+.heart-icon.lost {
+    opacity: 0.28;
+    filter: grayscale(1);
+    transform: scale(0.8);
+}
+
+.heart-icon.dead {
+    font-size: 13px;
+    animation: timer-shake 0.4s ease;
+}
+
+@keyframes heart-pop {
+    0% { transform: scale(0.7); }
+    70% { transform: scale(1.25); }
+    100% { transform: scale(1); }
 }
 
 /* Real-Time Countdown Timer Badge */
@@ -306,7 +386,6 @@ button:disabled {
 }
 
 .challenge-tag {
-    margin-left: auto;
     padding: 6px 10px;
     background: var(--cream);
     border: 1px solid var(--border-color);
@@ -562,6 +641,23 @@ button:disabled {
 
 /* Responsive */
 
+@media (max-width: 760px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .puzzle-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .puzzle-header-side {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
 @media (max-width: 700px) {
     .game-header {
         flex-wrap: wrap;
@@ -587,10 +683,6 @@ button:disabled {
 
     .game-logo {
         font-size: 17px;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
     }
 
     .puzzle-card {

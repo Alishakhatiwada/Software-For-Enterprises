@@ -48,7 +48,7 @@
             </p>
         </section>
 
-        <!-- Statistics Grid: Solved, Lives, Points, Achievement -->
+        <!-- Statistics Grid: 3 Clean Cards -->
         <section class="stats-grid">
 
             <div class="stat-card">
@@ -59,12 +59,11 @@
                 </div>
             </div>
 
-            <!-- Life System Display -->
             <div class="stat-card">
-                <span class="stat-icon">❤️</span>
+                <span class="stat-icon">🏆</span>
                 <div>
-                    <p>Lives Remaining</p>
-                    <h2 id="livesDisplay">❤️❤️❤️</h2>
+                    <p>Next Achievement</p>
+                    <h2 id="achievementText">First Five</h2>
                 </div>
             </div>
 
@@ -73,14 +72,6 @@
                 <div>
                     <p>Total Points</p>
                     <h2 id="pointsCount">0</h2>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <span class="stat-icon">🏆</span>
-                <div>
-                    <p>Next Achievement</p>
-                    <h2 id="achievementText">First Five</h2>
                 </div>
             </div>
 
@@ -110,15 +101,31 @@
         <section class="puzzle-card">
 
             <div class="puzzle-card-header">
-                <span class="live-dot"></span>
-                <span>BANANA PUZZLE CHALLENGE</span>
-
-                <!-- Real-Time Countdown Timer Badge (Event-Driven) -->
-                <div class="timer-badge" id="timerBadge" title="Time remaining for this puzzle">
-                    ⏱️ <span id="timerText">30s</span>
+                <div class="puzzle-header-title">
+                    <span class="live-dot"></span>
+                    <span>BANANA PUZZLE CHALLENGE</span>
                 </div>
 
-                <span class="challenge-tag">LET'S PLAY!</span>
+                <!-- Side Status Area: Small Red Hearts + Live Countdown Timer -->
+                <div class="puzzle-header-side">
+
+                    <!-- Lives Badge: Small Red Hearts displayed on the side -->
+                    <div class="lives-badge" id="livesBadge" title="Lives Remaining (3 Lives per Quest)">
+                        <span class="lives-label">LIVES</span>
+                        <div id="livesDisplay" class="lives-hearts" aria-label="3 lives remaining">
+                            <span class="heart-icon active">❤️</span>
+                            <span class="heart-icon active">❤️</span>
+                            <span class="heart-icon active">❤️</span>
+                        </div>
+                    </div>
+
+                    <!-- Real-Time Countdown Timer Badge (Event-Driven) -->
+                    <div class="timer-badge" id="timerBadge" title="Time remaining for this puzzle">
+                        ⏱️ <span id="timerText">30s</span>
+                    </div>
+
+                    <span class="challenge-tag">LET'S PLAY!</span>
+                </div>
             </div>
 
             <!-- Visual Countdown Bar -->

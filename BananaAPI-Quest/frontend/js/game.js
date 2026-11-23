@@ -234,15 +234,21 @@ function handleTimeout() {
 function updateLivesDisplay() {
     if (!livesDisplay) return;
 
-    if (currentLives === 3) {
-        livesDisplay.textContent = "❤️❤️❤️";
-    } else if (currentLives === 2) {
-        livesDisplay.textContent = "❤️❤️🤍";
-    } else if (currentLives === 1) {
-        livesDisplay.textContent = "❤️🤍🤍";
-    } else {
-        livesDisplay.textContent = "💔 (0)";
+    if (currentLives <= 0) {
+        livesDisplay.innerHTML = `<span class="heart-icon dead" title="No Lives Left">💔</span>`;
+        return;
     }
+
+    let heartsHtml = "";
+    for (let i = 1; i <= MAX_LIVES; i++) {
+        if (i <= currentLives) {
+            heartsHtml += `<span class="heart-icon active" title="Active Life (${i} of ${MAX_LIVES})">❤️</span>`;
+        } else {
+            heartsHtml += `<span class="heart-icon lost" title="Lost Life">🤍</span>`;
+        }
+    }
+
+    livesDisplay.innerHTML = heartsHtml;
 }
 
 /**
