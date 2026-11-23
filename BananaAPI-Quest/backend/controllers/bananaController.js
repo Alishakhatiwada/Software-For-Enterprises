@@ -157,34 +157,42 @@ const useHint = async (req, res) => {
             }
         );
 
-        if (!progress) {
-            const existingProgress =
-                await GameProgress.findOne({ userId });
+        let updatedProgress = progress;
+
+        if (!updatedProgress) {
+            let existingProgress = await GameProgress.findOne({ userId });
 
             if (!existingProgress) {
+                existingProgress = await GameProgress.create({ userId });
+            }
+
+            if (existingProgress.totalPoints < HINT_COST) {
                 return res.status(400).json({
                     success: false,
-                    message: "Solve a puzzle first to earn points."
+                    message: `You need at least ${HINT_COST} points to purchase a hint.`
                 });
             }
 
-            return res.status(400).json({
-                success: false,
-                message: "You need at least 20 points to purchase a hint."
-            });
+            existingProgress.totalPoints -= HINT_COST;
+            if (!existingProgress.hintedPuzzleIds.includes(puzzleId)) {
+                existingProgress.hintedPuzzleIds.push(puzzleId);
+            }
+            existingProgress.lastPlayed = new Date();
+            await existingProgress.save();
+            updatedProgress = existingProgress;
         }
 
         pointsDeducted = true;
 
-        // Get the next hint after deducting points.
+        // Get the next smart hint after deducting points.
         const hint = bananaApi.getHint(puzzleId);
 
         return res.status(200).json({
             success: true,
             hint,
             pointsSpent: HINT_COST,
-            remainingPoints: progress.totalPoints,
-            progress
+            remainingPoints: updatedProgress.totalPoints,
+            progress: updatedProgress
         });
 
     } catch (error) {

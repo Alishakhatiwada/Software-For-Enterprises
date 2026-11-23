@@ -2,6 +2,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const GameProgress = require("../models/GameProgress");
 
 // ==========================================
 // GENERATE A LOGIN TOKEN
@@ -88,6 +89,9 @@ async function register(req, res) {
             email: normalizedEmail,
             password: hashedPassword
         });
+
+        // Initialize user game progress with starter points
+        await GameProgress.create({ userId: user._id });
 
         // Generate the login token.
         const token = createToken(user);
