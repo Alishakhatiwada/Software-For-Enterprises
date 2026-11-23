@@ -1,4 +1,23 @@
 {
+  "name": "bananaapi-quest",
+  "version": "1.1.0",
+  "description": "BananaAPI-Quest - An Enterprise Web Application with Real-Time Timer, Life Mechanics, and Smart Mathematical Hints",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "cd backend && nodemon server.js",
+    "test": "cd backend && node -e \"require('./services/bananaApi').getPuzzle().then(p => console.log('Banana API integration test passed! ID:', p.puzzleId))\""
+  },
+  "keywords": [
+    "banana-api",
+    "quiz-quest",
+    "interoperability",
+    "event-driven",
+    "virtual-identity",
+    "version-control"
+  ],
+  "author": "Alisha",
+  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.6"
   }

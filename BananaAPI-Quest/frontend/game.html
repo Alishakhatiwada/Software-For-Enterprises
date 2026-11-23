@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,11 +44,11 @@
             <p>
                 Ready to solve some puzzles?
                 Look carefully at the picture, think logically,
-                and find the correct answer!
+                and find the correct answer before time runs out!
             </p>
         </section>
 
-        <!-- Statistics -->
+        <!-- Statistics Grid: Solved, Lives, Points, Achievement -->
         <section class="stats-grid">
 
             <div class="stat-card">
@@ -60,11 +59,12 @@
                 </div>
             </div>
 
+            <!-- Life System Display -->
             <div class="stat-card">
-                <span class="stat-icon">🏆</span>
+                <span class="stat-icon">❤️</span>
                 <div>
-                    <p>Next Achievement</p>
-                    <h2 id="achievementText">First Five</h2>
+                    <p>Lives Remaining</p>
+                    <h2 id="livesDisplay">❤️❤️❤️</h2>
                 </div>
             </div>
 
@@ -76,12 +76,20 @@
                 </div>
             </div>
 
+            <div class="stat-card">
+                <span class="stat-icon">🏆</span>
+                <div>
+                    <p>Next Achievement</p>
+                    <h2 id="achievementText">First Five</h2>
+                </div>
+            </div>
+
         </section>
 
-        <!-- Progress -->
+        <!-- Progress Toward Next Milestone -->
         <section class="progress-section">
             <div class="progress-labels">
-                <span>YOUR PROGRESS</span>
+                <span>QUEST MILESTONE</span>
                 <span id="progressText">0 / 5 puzzles</span>
             </div>
 
@@ -98,24 +106,46 @@
             </div>
         </section>
 
-        <!-- Puzzle Card -->
+        <!-- Main Puzzle Card -->
         <section class="puzzle-card">
 
             <div class="puzzle-card-header">
                 <span class="live-dot"></span>
                 <span>BANANA PUZZLE CHALLENGE</span>
 
+                <!-- Real-Time Countdown Timer Badge (Event-Driven) -->
+                <div class="timer-badge" id="timerBadge" title="Time remaining for this puzzle">
+                    ⏱️ <span id="timerText">30s</span>
+                </div>
+
                 <span class="challenge-tag">LET'S PLAY!</span>
+            </div>
+
+            <!-- Visual Countdown Bar -->
+            <div class="timer-track" id="timerTrack" aria-hidden="true">
+                <div id="timerFill" class="timer-fill"></div>
             </div>
 
             <h2>Can You Crack It? 🍌</h2>
 
             <p class="puzzle-instructions">
-                Study the picture carefully and enter your numerical answer.
+                Study the picture carefully and enter your numerical answer (0 to 9).
             </p>
 
-            <!-- Puzzle Image -->
-            <div class="puzzle-image-area">
+            <!-- Game Over Overlay (Shown when player loses all lives) -->
+            <div id="gameOverCard" class="game-over-card" style="display: none;">
+                <div class="game-over-content">
+                    <span class="game-over-icon">💔</span>
+                    <h3>Quest Over!</h3>
+                    <p id="gameOverDetails">You ran out of lives! Don't worry, every try makes you sharper.</p>
+                    <button type="button" id="restartGameBtn" class="restart-button">
+                        🔄 Play Again (3 Lives)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Puzzle Image Area -->
+            <div class="puzzle-image-area" id="puzzleImageArea">
                 <img
                     id="puzzleImage"
                     alt="Banana API visual maths puzzle"
@@ -123,71 +153,75 @@
                 >
             </div>
 
-            <!-- Answer Input -->
-            <label for="answerInput">YOUR ANSWER</label>
+            <!-- Answer Input Controls -->
+            <div id="gamePlayArea">
+                <label for="answerInput">YOUR ANSWER</label>
 
-            <input
-                type="number"
-                id="answerInput"
-                placeholder="Enter your number"
-                step="1"
-            >
-
-            <!-- Game Buttons -->
-            <div class="game-actions">
-
-                <button
-                    type="button"
-                    id="submitAnswer"
-                    class="check-button"
+                <input
+                    type="number"
+                    id="answerInput"
+                    placeholder="Enter your number (0 - 9)"
+                    min="0"
+                    max="9"
+                    step="1"
                 >
-                    Check Answer ✓
-                </button>
 
-                <button
-                    type="button"
-                    id="nextPuzzle"
-                    class="next-button"
-                    disabled
-                >
-                    Next Puzzle →
-                </button>
+                <!-- Game Action Buttons -->
+                <div class="game-actions">
 
-            </div>
+                    <button
+                        type="button"
+                        id="submitAnswer"
+                        class="check-button"
+                    >
+                        Check Answer ✓
+                    </button>
 
-            <!-- Hint Feature -->
-            <div class="hint-section">
+                    <button
+                        type="button"
+                        id="nextPuzzle"
+                        class="next-button"
+                        disabled
+                    >
+                        Next Puzzle →
+                    </button>
 
-                <button
-                    type="button"
-                    id="hintButton"
-                    class="hint-button"
-                >
-                    💡 Get a Hint (20 Points)
-                </button>
+                </div>
 
+                <!-- Helpful Hint Feature -->
+                <div class="hint-section">
+
+                    <button
+                        type="button"
+                        id="hintButton"
+                        class="hint-button"
+                    >
+                        💡 Get a Hint (20 Points)
+                    </button>
+
+                    <div
+                        id="hintMessage"
+                        class="hint-message"
+                        aria-live="polite"
+                    ></div>
+
+                </div>
+
+                <!-- Game Status Messages & Celebration Banner -->
                 <p
-                    id="hintMessage"
-                    class="hint-message"
+                    id="gameMessage"
+                    class="game-message"
                     aria-live="polite"
-                ></p>
+                >
+                    Get ready to play!
+                </p>
 
+                <div
+                    id="celebration"
+                    class="celebration"
+                    aria-live="polite"
+                ></div>
             </div>
-
-            <!-- Game Messages -->
-            <p
-                id="gameMessage"
-                class="game-message"
-                aria-live="polite"
-            >
-                Get ready to play!
-            </p>
-
-            <div
-                id="celebration"
-                class="celebration"
-                aria-live="polite"
-            ></div>
 
         </section>
 
@@ -198,10 +232,10 @@
 
     </main>
 
-    <!-- Authentication Check -->
+    <!-- Authentication Route Guard -->
     <script src="js/auth-check.js"></script>
 
-    <!-- Display Logged-in User -->
+    <!-- Display Logged-in User Name -->
     <script>
         const savedUser = localStorage.getItem("user");
 
@@ -218,7 +252,7 @@
         }
     </script>
 
-    <!-- Game Functionality -->
+    <!-- Game Logic & Event Handlers -->
     <script src="js/game.js"></script>
 
 </body>

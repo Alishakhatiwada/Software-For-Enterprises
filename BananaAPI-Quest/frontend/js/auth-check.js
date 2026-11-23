@@ -8,8 +8,11 @@ if (!token) {
 
         if (logoutButton) {
             logoutButton.addEventListener("click", function () {
+                // Remove saved authentication information.
                 localStorage.removeItem("token");
+                localStorage.removeItem("user");
 
+                // Redirect to login.
                 window.location.href = "login.html";
             });
         }
