@@ -136,11 +136,11 @@ button:disabled {
     color: var(--brown-muted);
 }
 
-/* Stats */
+/* Statistics Grid - 4 Columns */
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 16px;
     margin-bottom: 20px;
 }
@@ -211,7 +211,7 @@ button:disabled {
     transition: width 0.5s ease;
 }
 
-/* Puzzle card */
+/* Puzzle Card */
 
 .puzzle-card {
     padding: 30px;
@@ -225,7 +225,7 @@ button:disabled {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 9px;
+    gap: 12px;
     color: var(--brown-muted);
     font-size: 11px;
     font-weight: bold;
@@ -239,6 +239,72 @@ button:disabled {
     border-radius: 50%;
 }
 
+/* Real-Time Countdown Timer Badge */
+.timer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: var(--cream);
+    border: 1.5px solid var(--orange);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--cocoa);
+    transition: all 0.3s ease;
+}
+
+.timer-badge.warning {
+    background: #FFF3CD;
+    border-color: #E0A800;
+    color: #856404;
+    animation: timer-pulse 1s infinite alternate;
+}
+
+.timer-badge.danger {
+    background: #F8D7DA;
+    border-color: #DC3545;
+    color: #721C24;
+    animation: timer-shake 0.5s infinite;
+}
+
+@keyframes timer-pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+@keyframes timer-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* Visual Countdown Progress Bar */
+.timer-track {
+    width: 100%;
+    height: 7px;
+    background: #F0E6D2;
+    border-radius: 10px;
+    margin: 12px 0 16px;
+    overflow: hidden;
+}
+
+.timer-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--honey), var(--orange));
+    border-radius: inherit;
+    transition: width 1s linear, background-color 0.4s ease;
+}
+
+.timer-fill.warning {
+    background: #E0A800;
+}
+
+.timer-fill.danger {
+    background: #DC3545;
+}
+
 .challenge-tag {
     margin-left: auto;
     padding: 6px 10px;
@@ -250,14 +316,60 @@ button:disabled {
 }
 
 .puzzle-card > h2 {
-    margin: 24px 0 8px;
+    margin: 20px 0 8px;
     font-size: clamp(23px, 4vw, 30px);
 }
 
 .puzzle-instructions {
-    margin: 0 0 22px;
+    margin: 0 0 20px;
     color: var(--brown-muted);
     font-size: 14px;
+}
+
+/* Game Over Card */
+.game-over-card {
+    text-align: center;
+    padding: 26px 20px;
+    margin: 12px 0 24px;
+    background: #FFF4F2;
+    border: 2px dashed #DC3545;
+    border-radius: 16px;
+    animation: celebrate-pop 0.4s ease;
+}
+
+.game-over-icon {
+    font-size: 44px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.game-over-card h3 {
+    margin: 0 0 6px;
+    color: #A91E2C;
+    font-size: 22px;
+}
+
+.game-over-card p {
+    margin: 0 0 16px;
+    color: var(--brown-muted);
+    font-size: 14px;
+}
+
+.restart-button {
+    padding: 12px 28px;
+    background: var(--orange);
+    color: #FFFFFF;
+    border: 0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(232, 155, 69, 0.3);
+}
+
+.restart-button:hover {
+    background: var(--orange-hover);
+    transform: translateY(-2px);
 }
 
 .puzzle-image-area {
@@ -279,7 +391,7 @@ button:disabled {
     border-radius: 8px;
 }
 
-/* Answer input */
+/* Answer Input */
 
 .puzzle-card label {
     display: block;
@@ -345,7 +457,7 @@ button:disabled {
     background: #F8D786;
 }
 
-/* Hint */
+/* Hint Section */
 
 .hint-section {
     margin-top: 20px;
@@ -385,6 +497,18 @@ button:disabled {
     background: var(--warm-white);
     border: 1px solid var(--border-color);
     border-radius: 10px;
+}
+
+.hint-item {
+    margin: 6px 0;
+    padding: 10px 14px;
+    background: var(--cream);
+    border-left: 3px solid var(--orange);
+    border-radius: 8px;
+    text-align: left;
+    font-size: 13.5px;
+    color: var(--cocoa);
+    animation: celebrate-pop 0.3s ease;
 }
 
 /* Messages */

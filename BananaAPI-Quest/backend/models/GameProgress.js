@@ -21,7 +21,7 @@ const gameProgressSchema = new mongoose.Schema(
 
         totalPoints: {
             type: Number,
-            default: 0
+            default: 20 // Starter bonus so players can immediately test the hint system
         },
 
         // IDs of puzzles already solved
