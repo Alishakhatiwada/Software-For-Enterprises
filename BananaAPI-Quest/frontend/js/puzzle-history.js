@@ -1,9 +1,11 @@
+// Partly generated with AI assistance, reviewed and modified by me.
+
 // ==========================================
 // BANANAAPI-QUEST PUZZLE HISTORY
 // Loads real history from MongoDB
 // ==========================================
 
-const API_URL = "http://localhost:5000/api/banana";
+const API_URL = `${window.APP_CONFIG?.API_BASE_URL || "http://localhost:5000/api"}/banana`;
 
 document.addEventListener("DOMContentLoaded", async function () {
 

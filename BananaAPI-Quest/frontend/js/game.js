@@ -1,3 +1,5 @@
+// Partly generated with AI assistance, reviewed and modified by me.
+
 // =============================================================================
 // BANANAAPI-QUEST: MAIN GAME ENGINE
 //
@@ -9,7 +11,7 @@
 // 4. Virtual Identity (JWT bearer tokens, session persistence)
 // =============================================================================
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
 
 // -----------------------------------------------------------------------------
 // DOM ELEMENT REFERENCES

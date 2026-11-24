@@ -1,4 +1,6 @@
 
+// Partly generated with AI assistance, reviewed and modified by me.
+
 const loginForm = document.getElementById("loginForm");
 const loginMessage = document.getElementById("loginMessage");
 const loginButton = document.getElementById("loginButton");
@@ -13,8 +15,9 @@ loginForm.addEventListener("submit", async function (event) {
         loginButton.disabled = true;
         loginMessage.textContent = "Logging in...";
 
+        const apiBaseUrl = window.APP_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
         const response = await fetch(
-            "http://localhost:5000/api/auth/login",
+            `${apiBaseUrl}/auth/login`,
             {
                 method: "POST",
                 headers: {

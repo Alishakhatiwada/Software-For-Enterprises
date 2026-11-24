@@ -1,4 +1,6 @@
 
+// Partly generated with AI assistance, reviewed and modified by me.
+
 const registerForm = document.getElementById("registerForm");
 const message = document.getElementById("message");
 
@@ -25,8 +27,9 @@ registerForm.addEventListener("submit", async function (event) {
     try {
         message.textContent = "Creating your account...";
 
+        const apiBaseUrl = window.APP_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
         const response = await fetch(
-            "http://localhost:5000/api/auth/register",
+            `${apiBaseUrl}/auth/register`,
             {
                 method: "POST",
                 headers: {
