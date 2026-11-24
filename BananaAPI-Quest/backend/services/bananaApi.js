@@ -85,7 +85,13 @@ function cleanExpiredPuzzles() {
     }
 }
 
-async function getPuzzle() {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Executes a single HTTP request to the external Banana API.
+ * Uses an AbortController to enforce API_TIMEOUT.
+ */
+async function requestBananaOnce() {
     const controller = new AbortController();
 
     const timeout = setTimeout(() => {
@@ -100,22 +106,28 @@ async function getPuzzle() {
         });
     } catch (error) {
         if (error.name === "AbortError") {
-            throw new Error(
+            const timeoutError = new Error(
                 "Banana API request timed out. Please try again."
             );
+            timeoutError.isTimeout = true;
+            throw timeoutError;
         }
 
-        throw new Error(
+        const networkError = new Error(
             "Unable to connect to the Banana API. Please check your internet connection."
         );
+        networkError.isNetwork = true;
+        throw networkError;
     } finally {
         clearTimeout(timeout);
     }
 
     if (!response.ok) {
-        throw new Error(
+        const httpError = new Error(
             `Banana API request failed with status ${response.status}.`
         );
+        httpError.status = response.status;
+        throw httpError;
     }
 
     let data;
@@ -140,6 +152,42 @@ async function getPuzzle() {
             "The Banana API returned invalid puzzle data."
         );
     }
+
+    return data;
+}
+
+/**
+ * THEME 3: INTEROPERABILITY & RESILIENCE
+ * Wraps external HTTP calls in an exponential-backoff retry loop.
+ * Retries network failures, timeouts, and server 5xx errors up to maxAttempts.
+ * Immediately rejects client 4xx errors without retrying.
+ */
+async function requestBananaWithRetry(maxAttempts = config.maxRetryAttempts || 3) {
+    let lastError;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            return await requestBananaOnce();
+        } catch (error) {
+            lastError = error;
+
+            // Do NOT retry client 4xx HTTP errors (e.g. 400, 401, 404)
+            if (error.status && error.status >= 400 && error.status < 500) {
+                throw error;
+            }
+
+            // Retry on network errors, timeouts, or 5xx with backoff (300ms * attempt)
+            if (attempt < maxAttempts) {
+                await sleep(300 * attempt);
+            }
+        }
+    }
+
+    throw lastError;
+}
+
+async function getPuzzle() {
+    const data = await requestBananaWithRetry();
 
     cleanExpiredPuzzles();
 
@@ -213,5 +261,8 @@ function getHint(puzzleId) {
 module.exports = {
     getPuzzle,
     checkAnswer,
-    getHint
+    getHint,
+    generateSmartHints,
+    requestBananaOnce,
+    requestBananaWithRetry
 };
