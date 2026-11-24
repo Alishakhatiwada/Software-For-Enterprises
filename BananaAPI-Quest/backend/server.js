@@ -6,15 +6,21 @@ const cors = require("cors");
 
 const config = require("./config/config");
 const connectDB = require("./config/database");
+const { corsOptions, securityHeaders, apiLimiter } = require("./middleware/security");
 const authRoutes = require("./routes/authRoutes");
 const bananaRoutes = require("./routes/bananaRoutes");
 
 const app = express();
 const PORT = config.port;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security hardening
+app.disable("x-powered-by");
+app.use(securityHeaders);
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "10kb" }));
+
+// Rate limiting on all API routes
+app.use("/api", apiLimiter);
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
