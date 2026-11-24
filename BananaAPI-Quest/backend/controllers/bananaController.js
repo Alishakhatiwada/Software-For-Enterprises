@@ -1,7 +1,11 @@
 
+// Partly generated with AI assistance, reviewed and modified by me.
+
 const bananaApi = require("../services/bananaApi");
 const GameProgress = require("../models/GameProgress");
 const PuzzleHistory = require("../models/PuzzleHistory");
+const { gameEvents, EVENTS } = require("../events/gameEvents");
+const { getEventStats } = require("../events/listeners");
 
 const HINT_COST = 20;
 const PUZZLE_POINTS = 10;
@@ -13,6 +17,12 @@ const PUZZLE_POINTS = 10;
 const getPuzzle = async (req, res) => {
     try {
         const puzzle = await bananaApi.getPuzzle();
+
+        // Emit domain event for puzzle served
+        gameEvents.emit(EVENTS.puzzleServed, {
+            userId: req.user?.userId,
+            puzzleId: puzzle.puzzleId
+        });
 
         return res.status(200).json({
             success: true,
@@ -68,6 +78,14 @@ const submitAnswer = async (req, res) => {
         const isCorrect = result.correct;
         const pointsEarned = isCorrect ? PUZZLE_POINTS : 0;
 
+        // Emit domain event for answer submission
+        gameEvents.emit(EVENTS.answerSubmitted, {
+            userId,
+            puzzleId,
+            submittedAnswer,
+            isCorrect
+        });
+
         await PuzzleHistory.create({
             userId,
             puzzleId,
@@ -96,6 +114,16 @@ const submitAnswer = async (req, res) => {
         progress.lastPlayed = new Date();
 
         await progress.save();
+
+        // Emit domain event for solved puzzle after saving progress
+        if (isCorrect) {
+            gameEvents.emit(EVENTS.puzzleSolved, {
+                userId,
+                puzzleId,
+                totalPoints: progress.totalPoints,
+                solvedPuzzles: progress.solvedPuzzles
+            });
+        }
 
         return res.status(200).json({
             success: true,
@@ -186,6 +214,14 @@ const useHint = async (req, res) => {
 
         // Get the next smart hint after deducting points.
         const hint = bananaApi.getHint(puzzleId);
+
+        // Emit domain event for hint purchase
+        gameEvents.emit(EVENTS.hintPurchased, {
+            userId,
+            puzzleId,
+            hintNumber: hint.hintNumber,
+            remainingPoints: updatedProgress.totalPoints
+        });
 
         return res.status(200).json({
             success: true,
@@ -301,6 +337,26 @@ const getLeaderboard = async (req, res) => {
 
 
 // ==========================================
+// GET EVENT TELEMETRY (THEME 2)
+// ==========================================
+
+const getGameEvents = async (req, res) => {
+    try {
+        const stats = getEventStats();
+
+        return res.status(200).json(stats);
+    } catch (error) {
+        console.error("Get game events error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to load event telemetry."
+        });
+    }
+};
+
+
+// ==========================================
 // EXPORT CONTROLLERS
 // ==========================================
 
@@ -309,5 +365,6 @@ module.exports = {
     submitAnswer,
     useHint,
     getPuzzleHistory,
-    getLeaderboard
+    getLeaderboard,
+    getGameEvents
 };

@@ -1,8 +1,11 @@
 
+// Partly generated with AI assistance, reviewed and modified by me.
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const GameProgress = require("../models/GameProgress");
+const { gameEvents, EVENTS } = require("../events/gameEvents");
 
 // ==========================================
 // GENERATE A LOGIN TOKEN
@@ -96,6 +99,13 @@ async function register(req, res) {
         // Generate the login token.
         const token = createToken(user);
 
+        // Emit domain event for user registration
+        gameEvents.emit(EVENTS.userRegistered, {
+            userId: user._id.toString(),
+            email: user.email,
+            name: user.name
+        });
+
         return res.status(201).json({
             success: true,
             message: "Account created successfully!",
@@ -152,6 +162,11 @@ async function login(req, res) {
         }).select("+password");
 
         if (!user) {
+            gameEvents.emit(EVENTS.loginFailed, {
+                email: email.trim().toLowerCase(),
+                reason: "User not found"
+            });
+
             return res.status(401).json({
                 success: false,
                 message: "Invalid email or password."
@@ -165,6 +180,11 @@ async function login(req, res) {
         );
 
         if (!passwordMatches) {
+            gameEvents.emit(EVENTS.loginFailed, {
+                email: email.trim().toLowerCase(),
+                reason: "Incorrect password"
+            });
+
             return res.status(401).json({
                 success: false,
                 message: "Invalid email or password."
@@ -173,6 +193,13 @@ async function login(req, res) {
 
         // Generate the login token.
         const token = createToken(user);
+
+        // Emit domain event for successful login
+        gameEvents.emit(EVENTS.userLoggedIn, {
+            userId: user._id.toString(),
+            email: user.email,
+            name: user.name
+        });
 
         return res.status(200).json({
             success: true,
