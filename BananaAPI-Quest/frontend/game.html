@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,11 +16,13 @@
 
         <!-- Header -->
         <header class="game-header">
+
             <a href="index.html" class="game-logo">
                 🍌 Banana<span>API</span>-Quest
             </a>
 
             <nav class="game-navigation">
+
                 <a href="leaderboard.html" class="nav-link">
                     🏆 Leaderboard
                 </a>
@@ -26,15 +30,18 @@
                 <a href="puzzle-history.html" class="nav-link">
                     📜 Puzzle History
                 </a>
+
             </nav>
 
             <button type="button" id="logoutButton" class="logout-button">
                 Logout ↗
             </button>
+
         </header>
 
         <!-- Welcome Section -->
         <section class="welcome-section">
+
             <p class="eyebrow">YOUR PUZZLE ADVENTURE</p>
 
             <h1>
@@ -46,13 +53,15 @@
                 Look carefully at the picture, think logically,
                 and find the correct answer before time runs out!
             </p>
+
         </section>
 
-        <!-- Statistics Grid: 3 Clean Cards -->
+        <!-- Statistics Grid: Four Cards -->
         <section class="stats-grid">
 
             <div class="stat-card">
                 <span class="stat-icon">🍌</span>
+
                 <div>
                     <p>Puzzles Solved</p>
                     <h2 id="solvedCount">0</h2>
@@ -60,18 +69,29 @@
             </div>
 
             <div class="stat-card">
-                <span class="stat-icon">🏆</span>
+                <span class="stat-icon">❤️</span>
+
                 <div>
-                    <p>Next Achievement</p>
-                    <h2 id="achievementText">First Five</h2>
+                    <p>Lives Remaining</p>
+                    <h2 id="livesCount">3</h2>
                 </div>
             </div>
 
             <div class="stat-card">
                 <span class="stat-icon">⭐</span>
+
                 <div>
                     <p>Total Points</p>
                     <h2 id="pointsCount">0</h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">🏆</span>
+
+                <div>
+                    <p>Next Achievement</p>
+                    <h2 id="achievementText">First Five</h2>
                 </div>
             </div>
 
@@ -79,6 +99,7 @@
 
         <!-- Progress Toward Next Milestone -->
         <section class="progress-section">
+
             <div class="progress-labels">
                 <span>QUEST MILESTONE</span>
                 <span id="progressText">0 / 5 puzzles</span>
@@ -95,41 +116,64 @@
             >
                 <div id="progressFill" class="progress-fill"></div>
             </div>
+
         </section>
 
         <!-- Main Puzzle Card -->
         <section class="puzzle-card">
 
             <div class="puzzle-card-header">
+
                 <div class="puzzle-header-title">
                     <span class="live-dot"></span>
                     <span>BANANA PUZZLE CHALLENGE</span>
                 </div>
 
-                <!-- Side Status Area: Small Red Hearts + Live Countdown Timer -->
+                <!-- Side Status Area: Lives and Timer -->
                 <div class="puzzle-header-side">
 
-                    <!-- Lives Badge: Small Red Hearts displayed on the side -->
-                    <div class="lives-badge" id="livesBadge" title="Lives Remaining (3 Lives per Quest)">
+                    <!-- Lives Badge -->
+                    <div
+                        class="lives-badge"
+                        id="livesBadge"
+                        title="Lives Remaining (3 Lives per Quest)"
+                    >
+
                         <span class="lives-label">LIVES</span>
-                        <div id="livesDisplay" class="lives-hearts" aria-label="3 lives remaining">
+
+                        <div
+                            id="livesDisplay"
+                            class="lives-hearts"
+                            aria-label="3 lives remaining"
+                        >
                             <span class="heart-icon active">❤️</span>
                             <span class="heart-icon active">❤️</span>
                             <span class="heart-icon active">❤️</span>
                         </div>
+
                     </div>
 
-                    <!-- Real-Time Countdown Timer Badge (Event-Driven) -->
-                    <div class="timer-badge" id="timerBadge" title="Time remaining for this puzzle">
+                    <!-- Real-Time Countdown Timer -->
+                    <div
+                        class="timer-badge"
+                        id="timerBadge"
+                        title="Time remaining for this puzzle"
+                    >
                         ⏱️ <span id="timerText">30s</span>
                     </div>
 
                     <span class="challenge-tag">LET'S PLAY!</span>
+
                 </div>
+
             </div>
 
-            <!-- Visual Countdown Bar -->
-            <div class="timer-track" id="timerTrack" aria-hidden="true">
+            <!-- Visual Countdown Progress Bar -->
+            <div
+                class="timer-track"
+                id="timerTrack"
+                aria-hidden="true"
+            >
                 <div id="timerFill" class="timer-fill"></div>
             </div>
 
@@ -139,29 +183,49 @@
                 Study the picture carefully and enter your numerical answer (0 to 9).
             </p>
 
-            <!-- Game Over Overlay (Shown when player loses all lives) -->
-            <div id="gameOverCard" class="game-over-card" style="display: none;">
+            <!-- Game Over Overlay -->
+            <div
+                id="gameOverCard"
+                class="game-over-card"
+                style="display: none;"
+            >
+
                 <div class="game-over-content">
+
                     <span class="game-over-icon">💔</span>
+
                     <h3>Quest Over!</h3>
-                    <p id="gameOverDetails">You ran out of lives! Don't worry, every try makes you sharper.</p>
-                    <button type="button" id="restartGameBtn" class="restart-button">
+
+                    <p id="gameOverDetails">
+                        You ran out of lives! Don't worry, every try makes you sharper.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="restartGameBtn"
+                        class="restart-button"
+                    >
                         🔄 Play Again (3 Lives)
                     </button>
+
                 </div>
+
             </div>
 
             <!-- Puzzle Image Area -->
             <div class="puzzle-image-area" id="puzzleImageArea">
+
                 <img
                     id="puzzleImage"
                     alt="Banana API visual maths puzzle"
                     style="display: none;"
                 >
+
             </div>
 
             <!-- Answer Input Controls -->
             <div id="gamePlayArea">
+
                 <label for="answerInput">YOUR ANSWER</label>
 
                 <input
@@ -195,7 +259,7 @@
 
                 </div>
 
-                <!-- Helpful Hint Feature -->
+                <!-- Progressive Smart Hint Feature -->
                 <div class="hint-section">
 
                     <button
@@ -214,7 +278,7 @@
 
                 </div>
 
-                <!-- Game Status Messages & Celebration Banner -->
+                <!-- Game Status Messages -->
                 <p
                     id="gameMessage"
                     class="game-message"
@@ -223,18 +287,24 @@
                     Get ready to play!
                 </p>
 
+                <!-- Celebration Banner -->
                 <div
                     id="celebration"
                     class="celebration"
                     aria-live="polite"
                 ></div>
+
             </div>
 
         </section>
 
         <!-- Footer -->
         <footer class="game-footer">
-            <p>🍌 Keep thinking. Every puzzle is a new challenge!</p>
+
+            <p>
+                🍌 Keep thinking. Every puzzle is a new challenge!
+            </p>
+
         </footer>
 
     </main>
@@ -262,7 +332,7 @@
     <!-- Application Configuration -->
     <script src="js/config.js"></script>
 
-    <!-- Game Logic & Event Handlers -->
+    <!-- Game Logic and Event Handlers -->
     <script src="js/game.js"></script>
 
 </body>

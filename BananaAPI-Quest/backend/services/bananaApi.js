@@ -4,32 +4,31 @@
 const config = require("../config/config");
 
 const BANANA_API_URL = config.bananaApiUrl;
-const API_TIMEOUT = config.apiTimeout;
+const API_TIMEOUT = config.apiTimeout || 10000;
 const PUZZLE_EXPIRY = 30 * 60 * 1000; // 30 minutes
 
 const solutions = new Map();
 
 /**
- * THEME 3: INTEROPERABILITY & LOGICAL DATA ENRICHMENT
- * Rather than generic motivational quotes, this function dynamically computes
- * progressive, mathematically useful hints tailored directly to the puzzle solution (0-9):
- * - Hint 1: Parity and broad magnitude range (cuts search space by ~70%).
- * - Hint 2: Specific mathematical property (prime, multiple, identity) + 3-candidate shortlist.
- * - Hint 3: 50/50 elimination clue narrowing the answer down to two possible choices.
+ * Generate three progressive mathematical hints
+ * based on the correct puzzle solution.
  */
 function generateSmartHints(solutionValue) {
     const num = Number(solutionValue);
     const isEven = num % 2 === 0;
 
-    // --- HINT 1: Parity & Range Clue ---
+    // HINT 1: Parity and range
     const parity = isEven ? "EVEN" : "ODD";
-    const rangeText = num <= 4 
-        ? "in the lower range (between 0 and 4)" 
+
+    const rangeText = num <= 4
+        ? "in the lower range (between 0 and 4)"
         : "in the upper range (between 5 and 9)";
+
     const hint1 = `Parity & Range Clue: The answer is an ${parity} number located ${rangeText}.`;
 
-    // --- HINT 2: Number Property & 3-Candidate Selection ---
+    // HINT 2: Mathematical property
     let propertyClue = "";
+
     if (num === 0) {
         propertyClue = "Zero Property: It represents nothing/zero (adding it leaves numbers unchanged).";
     } else if (num === 1) {
@@ -44,17 +43,17 @@ function generateSmartHints(solutionValue) {
         propertyClue = `Bounds Clue: The answer is strictly between ${Math.max(0, num - 2)} and ${Math.min(9, num + 2)}.`;
     }
 
-    // Build a candidate list of 3 numbers including the correct answer and 2 plausible distractors
     const allDigits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     const candidateSet = new Set([num]);
 
-    // Choose distractors preferring same parity and close distance
     const potentialDistractors = allDigits
         .filter(d => d !== num)
         .sort((a, b) => {
             const aSame = (a % 2 === num % 2) ? 0 : 1;
             const bSame = (b % 2 === num % 2) ? 0 : 1;
+
             if (aSame !== bSame) return aSame - bSame;
+
             return Math.abs(a - num) - Math.abs(b - num);
         });
 
@@ -64,17 +63,21 @@ function generateSmartHints(solutionValue) {
     }
 
     const candidateList = Array.from(candidateSet).sort((a, b) => a - b);
+
     const hint2 = `${propertyClue} The answer is definitely one of these three numbers: [${candidateList.join(", ")}].`;
 
-    // --- HINT 3: 50/50 Final Elimination ---
-    const chosenDistractor = candidateList.find(c => c !== num) ?? ((num + 1) % 10);
+    // HINT 3: Final 50/50 elimination
+    const chosenDistractor =
+        candidateList.find(c => c !== num) ?? ((num + 1) % 10);
+
     const finalPair = [num, chosenDistractor].sort((a, b) => a - b);
+
     const hint3 = `50/50 Elimination: The answer is narrowed down to either ${finalPair[0]} or ${finalPair[1]}!`;
 
     return [hint1, hint2, hint3];
 }
 
-// Remove puzzles that have expired.
+// Remove expired puzzles.
 function cleanExpiredPuzzles() {
     const now = Date.now();
 
@@ -85,11 +88,12 @@ function cleanExpiredPuzzles() {
     }
 }
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms) =>
+    new Promise(resolve => setTimeout(resolve, ms));
 
 /**
- * Executes a single HTTP request to the external Banana API.
- * Uses an AbortController to enforce API_TIMEOUT.
+ * Execute one request to the external Banana API.
+ * Includes timeout and response validation.
  */
 async function requestBananaOnce() {
     const controller = new AbortController();
@@ -109,6 +113,7 @@ async function requestBananaOnce() {
             const timeoutError = new Error(
                 "Banana API request timed out. Please try again."
             );
+
             timeoutError.isTimeout = true;
             throw timeoutError;
         }
@@ -116,6 +121,7 @@ async function requestBananaOnce() {
         const networkError = new Error(
             "Unable to connect to the Banana API. Please check your internet connection."
         );
+
         networkError.isNetwork = true;
         throw networkError;
     } finally {
@@ -126,6 +132,7 @@ async function requestBananaOnce() {
         const httpError = new Error(
             `Banana API request failed with status ${response.status}.`
         );
+
         httpError.status = response.status;
         throw httpError;
     }
@@ -157,12 +164,12 @@ async function requestBananaOnce() {
 }
 
 /**
- * THEME 3: INTEROPERABILITY & RESILIENCE
- * Wraps external HTTP calls in an exponential-backoff retry loop.
- * Retries network failures, timeouts, and server 5xx errors up to maxAttempts.
- * Immediately rejects client 4xx errors without retrying.
+ * Retry failed API requests using exponential backoff.
+ * Client-side 4xx errors are not retried.
  */
-async function requestBananaWithRetry(maxAttempts = config.maxRetryAttempts || 3) {
+async function requestBananaWithRetry(
+    maxAttempts = config.maxRetryAttempts || 3
+) {
     let lastError;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -171,12 +178,12 @@ async function requestBananaWithRetry(maxAttempts = config.maxRetryAttempts || 3
         } catch (error) {
             lastError = error;
 
-            // Do NOT retry client 4xx HTTP errors (e.g. 400, 401, 404)
-            if (error.status && error.status >= 400 && error.status < 500) {
+            // Do not retry client errors.
+            if (error.status >= 400 && error.status < 500) {
                 throw error;
             }
 
-            // Retry on network errors, timeouts, or 5xx with backoff (300ms * attempt)
+            // Retry network errors, timeouts and server errors.
             if (attempt < maxAttempts) {
                 await sleep(300 * attempt);
             }
@@ -186,6 +193,9 @@ async function requestBananaWithRetry(maxAttempts = config.maxRetryAttempts || 3
     throw lastError;
 }
 
+/**
+ * Fetch a new puzzle and store its solution and hints.
+ */
 async function getPuzzle() {
     const data = await requestBananaWithRetry();
 
@@ -194,7 +204,6 @@ async function getPuzzle() {
     const puzzleId =
         `p_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
-    // Generate 3 progressive, mathematically useful hints for this specific puzzle
     const hints = generateSmartHints(data.solution);
 
     solutions.set(puzzleId, {
@@ -210,6 +219,9 @@ async function getPuzzle() {
     };
 }
 
+/**
+ * Check the player's submitted answer.
+ */
 function checkAnswer(answer, puzzleId) {
     if (!puzzleId || !solutions.has(puzzleId)) {
         throw new Error(
@@ -226,7 +238,7 @@ function checkAnswer(answer, puzzleId) {
 
     const correct = playerAnswer === puzzle.solution;
 
-    // Remove the puzzle after an answer is submitted.
+    // Remove the puzzle after submission.
     solutions.delete(puzzleId);
 
     return {
@@ -235,6 +247,9 @@ function checkAnswer(answer, puzzleId) {
     };
 }
 
+/**
+ * Return progressive hints one at a time.
+ */
 function getHint(puzzleId) {
     if (!puzzleId || !solutions.has(puzzleId)) {
         throw new Error(
@@ -245,7 +260,9 @@ function getHint(puzzleId) {
     const puzzle = solutions.get(puzzleId);
 
     if (puzzle.hintIndex >= puzzle.hints.length) {
-        throw new Error("You have already used all 3 available hints for this puzzle.");
+        throw new Error(
+            "You have already used all 3 available hints for this puzzle."
+        );
     }
 
     const hint = puzzle.hints[puzzle.hintIndex];
