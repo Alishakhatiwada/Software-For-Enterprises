@@ -1,8 +1,10 @@
 
-const BANANA_API_URL =
-    "https://marcconrad.com/uob/banana/api.php?out=json&base64=no";
+// Partly generated with AI assistance, reviewed and modified by me.
 
-const API_TIMEOUT = 10000; // 10 seconds
+const config = require("../config/config");
+
+const BANANA_API_URL = config.bananaApiUrl;
+const API_TIMEOUT = config.apiTimeout;
 const PUZZLE_EXPIRY = 30 * 60 * 1000; // 30 minutes
 
 const solutions = new Map();
