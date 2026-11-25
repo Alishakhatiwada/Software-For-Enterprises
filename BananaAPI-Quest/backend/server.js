@@ -7,8 +7,12 @@ const cors = require("cors");
 const config = require("./config/config");
 const connectDB = require("./config/database");
 const { corsOptions, securityHeaders, apiLimiter } = require("./middleware/security");
+const { registerListeners } = require("./events/listeners");
 const authRoutes = require("./routes/authRoutes");
 const bananaRoutes = require("./routes/bananaRoutes");
+
+// Register domain lifecycle event listeners
+registerListeners();
 
 const app = express();
 const PORT = config.port;

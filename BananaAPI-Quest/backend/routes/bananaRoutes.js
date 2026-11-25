@@ -1,3 +1,5 @@
+// Partly generated with AI assistance, reviewed and modified by me.
+
 const express = require("express");
 const router = express.Router();
 
@@ -6,7 +8,8 @@ const {
     submitAnswer,
     useHint,
     getPuzzleHistory,
-    getLeaderboard
+    getLeaderboard,
+    getGameEvents
 } = require("../controllers/bananaController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -19,5 +22,8 @@ router.post("/answer", submitAnswer);
 router.post("/hint", useHint);
 router.get("/history", getPuzzleHistory);
 router.get("/leaderboard", getLeaderboard);
+
+// Protected route to inspect event telemetry (THEME 2)
+router.get("/events", getGameEvents);
 
 module.exports = router;
